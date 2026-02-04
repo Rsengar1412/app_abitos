@@ -1,19 +1,17 @@
-/* Contenedor principal de los contadores */
-.contadores-container {
-    padding: 2rem;
-    text-align: center;
-    position: relative;
+/* Barra superior con Salir y Añadir */
+.top-bar-contadores {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
 }
 
-/* Botón de salir (arriba a la derecha) */
+/* Botón de salir */
 .btn-salir {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: var(--radius-sm);
     background-color: var(--bg-secondary);
     color: var(--text-secondary);
@@ -28,18 +26,45 @@
     color: var(--error-color);
 }
 
+/* Botón de añadir nuevo hábito */
+.btn-añadir {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    background-color: var(--brand-color);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-añadir:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    filter: brightness(1.1);
+}
+
+.btn-añadir:active {
+    transform: translateY(0);
+}
+
 /* Título de la sección */
 .titulo-seccion {
     font-size: 1.5rem;
     margin-bottom: 2rem;
     color: var(--text-primary);
+    text-align: center;
 }
 
-/* Grid para poner los dos contadores lado a lado */
+/* Grid para los contadores */
 .grid-contadores {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
@@ -49,88 +74,120 @@
     border-radius: var(--radius-lg);
     padding: 1.5rem;
     border: 2px solid transparent;
-    transition: transform 0.2s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-/* Borde verde cuando hay racha */
+.tarjeta-contador:hover {
+    transform: translateY(-5px);
+    background-color: var(--bg-primary);
+}
+
+/* Borde branding cuando hay racha */
 .tarjeta-contador.racha-activa {
-    border-color: var(--marketing-green);
+    border-color: rgba(231, 76, 60, 0.3);
+    box-shadow: 0 8px 24px rgba(231, 76, 60, 0.1);
 }
 
-/* Encabezado de la tarjeta (icono + texto) */
-.header-contador {
+/* Encabezado dinámico (icono + título + borrar) */
+.header-contador-dinamico {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.icon-title-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: var(--text-secondary);
 }
 
-.titulo-contador {
-    font-size: 0.9rem;
-    font-weight: 600;
+.btn-delete-habit {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.3;
+    transition: all 0.2s;
+}
+
+.btn-delete-habit:hover {
+    opacity: 1;
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--error-color);
+}
+
+/* GRID DE PRESETS EN EL MODAL */
+.grid-presets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 1.5rem;
+}
+
+.btn-preset {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-preset:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--brand-color);
+    transform: scale(1.02);
+}
+
+.btn-preset:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
+
+.btn-preset span {
+    font-size: 0.8rem;
+    font-weight: 500;
 }
 
 /* El número grande del contador */
 .numero-contador {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 800;
-    color: var(--brand-color);
     line-height: 1;
 }
 
 .texto-dias {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 0.5rem;
-}
-
-/* Mensaje de racha fuerte */
-.mensaje-racha {
-    margin-top: 1rem;
-    color: var(--marketing-green);
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-}
-
-/* Botón de reiniciar */
-.btn-reiniciar {
-    margin-top: 1rem;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    background-color: var(--bg-primary);
-    color: var(--text-secondary);
-    font-size: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-reiniciar:hover {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-}
-
-/* Texto de pie de página */
-.nota-pie {
     font-size: 0.9rem;
     color: var(--text-secondary);
-    font-style: italic;
+    margin-top: 0.5rem;
+    font-weight: 500;
 }
 
 /* Ajuste para móviles */
 @media (max-width: 480px) {
     .grid-contadores {
         grid-template-columns: 1fr;
-        /* Uno debajo del otro en móvil */
+    }
+
+    .grid-presets {
+        grid-template-columns: 1fr;
     }
 }
 

@@ -1,46 +1,23 @@
 import React from 'react';
-import { Award } from 'lucide-react';
-// Importamos los estilos
+import { Award, CheckCircle2, Circle } from 'lucide-react';
 import './Logros.css';
 
-// Configuración de las medallas/logros
 const ACHIEVEMENTS = [
-    {
-        days: 7,
-        title: "Primera Semana",
-        desc: "El comienzo de todo",
-        img: "/src/assets/badges/7_days.png" // O generada dinámicamente
-    },
-    {
-        days: 30,
-        title: "Un Mes Fuerte",
-        desc: "Disciplina establecida",
-        img: "/src/assets/badges/30_days.png"
-    },
-    {
-        days: 90,
-        title: "Guerrero",
-        desc: "Reinicio cerebral",
-        img: "/src/assets/badges/90_days.png"
-    },
-    {
-        days: 365,
-        title: "Leyenda",
-        desc: "Una nueva vida",
-        img: "/src/assets/badges/365_days.png"
-    }
+    { days: 1, title: "Primer Paso", desc: "El viaje de mil millas comienza aquí", icon: "🌱" },
+    { days: 3, title: "Persistencia", desc: "Superando el inicio crítico", icon: "🔥" },
+    { days: 7, title: "Primera Semana", desc: "Una victoria sólida", icon: "🎖️" },
+    { days: 15, title: "Quincena de Hierro", desc: "Ya no eres el mismo", icon: "⚔️" },
+    { days: 30, title: "Un Mes Fuerte", desc: "Disciplina establecida", icon: "🏆" },
+    { days: 90, title: "Guerrero", desc: "Reinicio cerebral", icon: "🛡️" },
+    { days: 365, title: "Leyenda", desc: "Una vida nueva", icon: "👑" }
 ];
 
-// Componente: Logros y Medallas
-const Logros = ({ currentDays }) => {
-    // Calculamos el próximo logro para la barra de progreso
-    const nextAchievement = ACHIEVEMENTS.find(a => a.days > currentDays) || ACHIEVEMENTS[ACHIEVEMENTS.length - 1];
-    const prevAchievementDays = 0; // Podríamos buscar el anterior para calcular % relativo
+const Logros = ({ habits = [], currentMaxDays = 0 }) => {
+    const nextAchievement = ACHIEVEMENTS.find(a => a.days > currentMaxDays) || ACHIEVEMENTS[ACHIEVEMENTS.length - 1];
 
-    // Cálculo de porcentaje para la barra
-    const totalRange = nextAchievement.days - prevAchievementDays;
-    const progressInRange = currentDays - prevAchievementDays;
-    const progressPercent = Math.min(100, Math.max(0, (progressInRange / nextAchievement.days) * 100));
+    // Calcular porcentaje hacia el siguiente logro
+    const lastAchDays = ACHIEVEMENTS.filter(a => a.days <= currentMaxDays).pop()?.days || 0;
+    const progressPercent = Math.min(100, Math.max(0, ((currentMaxDays - lastAchDays) / (nextAchievement.days - lastAchDays)) * 100));
 
     return (
         <div className="logros-container">
@@ -49,36 +26,51 @@ const Logros = ({ currentDays }) => {
                 Tu Sala de Trofeos
             </h3>
 
+            {/* Resumen de hábitos y sus récords */}
+            <div className="resumen-habitos-logros">
+                {habits.map(h => (
+                    <div key={h.id} className="habit-mini-logro">
+                        <span className="habit-mini-name">{h.name}</span>
+                        <div className="habit-mini-days">
+                            <span className="days-num">{h.days}</span>
+                            <span className="days-label">días</span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             <div className="grid-medallas">
                 {ACHIEVEMENTS.map((ach, idx) => {
-                    const isUnlocked = currentDays >= ach.days;
+                    const isUnlocked = currentMaxDays >= ach.days;
+                    // Ver qué hábitos han desbloqueado este logro
+                    const unlockedBy = habits.filter(h => h.days >= ach.days);
 
                     return (
-                        <div
-                            key={idx}
-                            className={`medalla-card ${isUnlocked ? 'desbloqueada' : ''}`}
-                        >
-                            {/* Como no tenemos las imágenes reales aún, usamos un icono o placeholder */}
-                            <div className="img-medalla" style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: '2rem'
-                            }}>
-                                {isUnlocked ? '🏆' : '🔒'}
+                        <div key={idx} className={`medalla-card ${isUnlocked ? 'desbloqueada' : ''}`}>
+                            <div className="img-medalla">
+                                <span role="img" aria-label={ach.title}>{ach.icon}</span>
+                                {isUnlocked && <CheckCircle2 className="unlocked-checkmark" size={16} />}
                             </div>
 
                             <h4 className="titulo-medalla">{ach.title}</h4>
                             <p className="desc-medalla">{ach.desc}</p>
+
+                            {unlockedBy.length > 0 && (
+                                <div className="unlocked-by-badges">
+                                    {unlockedBy.map(h => (
+                                        <span key={h.id} className="habit-dot" style={{ backgroundColor: h.color }} title={h.name} />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     );
                 })}
             </div>
 
-            {/* Barra de progreso hacia el siguiente nivel */}
+            {/* Barra de progreso global */}
             <div className="progreso-proximo-logro">
                 <div className="texto-progreso">
-                    <span>Progreso hacia Nivel {nextAchievement.title}</span>
+                    <span>Próximo: {nextAchievement.title}</span>
                     <span>{Math.floor(progressPercent)}%</span>
                 </div>
                 <div className="barra-fondo">
@@ -87,8 +79,8 @@ const Logros = ({ currentDays }) => {
                         style={{ width: `${progressPercent}%` }}
                     />
                 </div>
-                <p style={{ fontSize: '0.75rem', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>
-                    {currentDays} / {nextAchievement.days} días
+                <p className="dias-faltantes">
+                    {currentMaxDays} / {nextAchievement.days} días (Mejor racha)
                 </p>
             </div>
         </div>

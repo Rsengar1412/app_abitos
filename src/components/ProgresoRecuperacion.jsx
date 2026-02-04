@@ -47,12 +47,18 @@ const MILESTONES = [
     }
 ];
 
-// Componente: Timeline de Recuperación
-// Muestra tu progreso y qué beneficios has desbloqueado
-const ProgresoRecuperacion = ({ maxDays }) => {
+/**
+ * ProgresoRecuperacion: Visualiza la línea de tiempo científica de la recuperación.
+ * Explica qué beneficios biológicos se obtienen según los días de racha alcanzados.
+ */
+const ProgresoRecuperacion = ({ maxDays = 0 }) => {
+    // maxDays: Viene de App.jsx y representa la mejor racha actual del usuario.
+    const safeMaxDays = isNaN(maxDays) ? 0 : maxDays;
 
-    // Función auxiliar para saber si un hito está cumplido
-    const isUnlocked = (days) => maxDays >= days;
+    /**
+     * isUnlocked: Función auxiliar para verificar si se ha alcanzado un hito.
+     */
+    const isUnlocked = (days) => safeMaxDays >= days;
 
     return (
         <div className="timeline-container">

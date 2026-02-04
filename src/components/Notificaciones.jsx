@@ -1,147 +1,124 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, BellOff } from 'lucide-react';
+import { Bell, BellOff, Settings2, Check } from 'lucide-react';
 import './Notificaciones.css';
 
-// Componente: Gestor de Notificaciones
-// Pide permiso y programa recordatorios locales
-const Notificaciones = () => {
-    // ESTADOS:
-    // 'default' (sin preguntar), 'granted' (sí), 'denied' (no)
-    const [permission, setPermission] = useState('default');
-    const [enabled, setEnabled] = useState(false); // ¿Están activas en nuestra app?
+/**
+ * HABIT_MESSAGES: Textos para las notificaciones push según el hábito.
+ */
+const HABIT_MESSAGES = {
+    porn: { title: "Dopamina Real", body: "No busques lo fácil. Busca lo que te hace sentir orgulloso." },
+    smoking: { title: "Aire Puro", body: "¿Has notado cómo respiras hoy? Sigue así." },
+    socialmedia: { title: "Mundo Real", body: "Toda la vida pasa fuera de la pantalla. Levanta la vista." },
+    sugar: { title: "Energía Estable", body: "Tu cuerpo prefiere combustible de calidad. Elige bien hoy." },
+    default: { title: "Mantente Fuerte", body: "Un paso más hacia tu mejor versión." }
+};
 
-    // EFECTO: Comprobar permisos al cargar
+/**
+ * Notificaciones: Gestiona los permisos del navegador para enviar alertas push.
+ * habits: Recibe la lista de hábitos para configurar recordatorios individuales.
+ */
+const Notificaciones = ({ habits = [] }) => {
+    // Aseguramos que habits sea un array para evitar errores en el .map()
+    const safeHabits = Array.isArray(habits) ? habits : [];
+
+    // permission: Estado del permiso en el navegador (default, granted, denied).
+    const [permission, setPermission] = useState('default');
+    // enabled: Si el usuario ha activado globalmente las alertas en la app.
+    const [enabled, setEnabled] = useState(false);
+    // activeHabitsReminders: Diccionario de qué hábitos tienen el recordatorio encendido.
+    const [activeHabitsReminders, setActiveHabitsReminders] = useState({});
+
+    /**
+     * EFECTO: Cargar preferencias guardadas localmente al iniciar.
+     */
     useEffect(() => {
         if ('Notification' in window) {
             setPermission(Notification.permission);
-            // Leemos de la memoria local si el usuario las activó antes
             setEnabled(localStorage.getItem('notificationsEnabled') === 'true');
+            const stored = JSON.parse(localStorage.getItem('habitReminders') || '{}');
+            setActiveHabitsReminders(stored);
         }
     }, []);
 
-    // LÓGICA: Pedir permiso al navegador
+    /**
+     * requestPermission: Solicita al navegador permiso para enviar notificaciones.
+     */
     const requestPermission = async () => {
-        if (!('Notification' in window)) {
-            alert('Tu navegador no soporta notificaciones');
-            return;
-        }
-
+        if (!('Notification' in window)) return;
         const result = await Notification.requestPermission();
         setPermission(result);
-
         if (result === 'granted') {
             setEnabled(true);
             localStorage.setItem('notificationsEnabled', 'true');
-            scheduleNotifications();
-
-            // Enviamos una prueba
-            new Notification('¡Notificaciones Activadas!', {
-                body: 'Recibirás recordatorios diarios para mantenerte fuerte.',
-                icon: '/icon.svg', // Icono de la app
-                badge: '/icon.svg'
+            // Enviamos una notificación de prueba para confirmar éxito.
+            new Notification('¡Soporte Activo!', {
+                body: 'Recibirás recordatorios personalizados para tus hábitos.',
+                icon: '/icon.svg'
             });
         }
     };
 
-    // LÓGICA: Desactivar (solo a nivel de nuestra app, no del navegador)
-    const disableNotifications = () => {
-        setEnabled(false);
-        localStorage.setItem('notificationsEnabled', 'false');
+    /**
+     * toggleNotification: Activa o desactiva la función global sin revocar permisos.
+     */
+    const toggleNotification = () => {
+        const next = !enabled;
+        setEnabled(next);
+        localStorage.setItem('notificationsEnabled', next ? 'true' : 'false');
     };
 
-    // LÓGICA: Programar los avisos (simulación)
-    // En una app web real sin servidor push, esto se basa en que la app esté abierta o use Service Workers
-    // Aquí usamos un setTimeout simple que funcionará si la pestaña está abierta
-    const scheduleNotifications = () => {
-        // Recordatorio de la mañana (9:00 AM)
-        scheduleDailyNotification(9, 0, {
-            title: '💪 Buenos días, Guerrero',
-            body: 'Hoy es un nuevo día. Tú decides quién eres.'
-        });
-
-        // Recordatorio de la noche (10:00 PM)
-        scheduleDailyNotification(22, 0, {
-            title: '🌙 Hora de descansar',
-            body: 'Deja el móvil fuera del cuarto. Tu yo del mañana te lo agradecerá.'
-        });
+    /**
+     * toggleHabitReminder: Activa recordatorios para un hábito específico.
+     */
+    const toggleHabitReminder = (id) => {
+        const next = { ...activeHabitsReminders, [id]: !activeHabitsReminders[id] };
+        setActiveHabitsReminders(next);
+        localStorage.setItem('habitReminders', JSON.stringify(next));
     };
 
-    const scheduleDailyNotification = (hour, minute, options) => {
-        const now = new Date();
-        const scheduledTime = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            hour,
-            minute,
-            0
-        );
-
-        // Si ya pasó la hora hoy, programar para mañana
-        if (scheduledTime <= now) {
-            scheduledTime.setDate(scheduledTime.getDate() + 1);
-        }
-
-        const timeUntilNotification = scheduledTime.getTime() - now.getTime();
-
-        setTimeout(() => {
-            // Solo enviar si siguen activadas
-            if (localStorage.getItem('notificationsEnabled') === 'true') {
-                new Notification(options.title, {
-                    body: options.body,
-                    icon: '/icon.svg',
-                    badge: '/icon.svg',
-                    requireInteraction: false
-                });
-            }
-
-            // Reprogramar para el día siguiente (bucle)
-            scheduleDailyNotification(hour, minute, options);
-        }, timeUntilNotification);
-    };
-
-    // Si el navegador no tiene notificaciones, no renderizamos nada
-    if (!('Notification' in window)) {
-        return null;
-    }
+    // Si el navegador no soporta notificaciones, no renderizamos nada.
+    if (!('Notification' in window)) return null;
 
     return (
         <div className="notificaciones-container">
-            <div className="info-notif">
-                <div className="header-info-notif">
-                    {enabled ? <Bell size={18} /> : <BellOff size={18} />}
-                    <span className="titulo-notif">
-                        Recordatorios Diarios
-                    </span>
+            <div className="header-notif-main">
+                <div className="info-notif-text">
+                    <h3 className="titulo-notif">Recordatorios Personalizados</h3>
+                    <p className="desc-notif">Recibe apoyo justo cuando más lo necesitas.</p>
                 </div>
-                <p className="desc-notif">
-                    {enabled
-                        ? 'Recibirás motivación por la mañana y recordatorios por la noche'
-                        : 'Activa para recibir apoyo en momentos clave'
-                    }
-                </p>
+                <button
+                    onClick={permission === 'granted' ? toggleNotification : requestPermission}
+                    className={`btn-master-toggle ${enabled ? 'active' : ''}`}
+                >
+                    {enabled ? <Bell size={18} /> : <BellOff size={18} />}
+                    <span>{enabled ? 'Activas' : 'Inactivas'}</span>
+                </button>
             </div>
 
-            {!enabled ? (
-                <button
-                    onClick={requestPermission}
-                    disabled={permission === 'denied'}
-                    className="btn-activar-notif"
-                    style={{
-                        cursor: permission === 'denied' ? 'not-allowed' : 'pointer',
-                        backgroundColor: permission === 'denied' ? 'var(--bg-primary)' : 'var(--brand-color)',
-                        color: permission === 'denied' ? 'var(--text-secondary)' : 'white'
-                    }}
-                >
-                    {permission === 'denied' ? 'Bloqueado' : 'Activar'}
-                </button>
-            ) : (
-                <button
-                    onClick={disableNotifications}
-                    className="btn-desactivar-notif"
-                >
-                    Desactivar
-                </button>
+            {/* Solo mostramos la lista de hábitos si las notificaciones están activadas. */}
+            {enabled && safeHabits.length > 0 && (
+                <div className="habits-reminders-list">
+                    <p className="small-label">Recordatorios por Hábito:</p>
+                    <div className="grid-notif-habitos">
+                        {safeHabits.map(h => (
+                            <button
+                                key={h.id}
+                                className={`btn-habit-notif ${activeHabitsReminders[h.id] ? 'active' : ''}`}
+                                onClick={() => toggleHabitReminder(h.id)}
+                            >
+                                <div className="dot-habit-notif" style={{ backgroundColor: h.color }} />
+                                <span className="name-habit-notif">{h.name}</span>
+                                {activeHabitsReminders[h.id] && <Check size={14} className="check-notif" />}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {permission === 'denied' && (
+                <p className="error-permisos">
+                    ❌ Las notificaciones están bloqueadas en tu navegador. Actívalas en ajustes para recibir apoyo.
+                </p>
             )}
         </div>
     );

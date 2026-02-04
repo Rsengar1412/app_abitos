@@ -6,31 +6,39 @@ import { useAuth } from '../contexts/AuthContext';
 // Importamos los estilos
 import './DiarioGratitud.css';
 
-// Componente: Diario de Gratitud
-// Permite al usuario guardar 3 cosas positivas cada día
+/**
+ * DiarioGratitud: Espacio diario para que el usuario registre 3 cosas positivas.
+ * Ayuda a reprogramar el sistema de recompensa del cerebro enfocándose en lo positivo.
+ */
 const DiarioGratitud = () => {
-    // ESTADOS
-    const [entries, setEntries] = useState(['', '', '']); // Las 3 líneas de texto
-    const [isCompleted, setIsCompleted] = useState(false); // ¿Ya completó hoy?
-    const [loading, setLoading] = useState(true); // ¿Cargando datos?
+    // entries: Almacena las 3 líneas de texto del diario.
+    const [entries, setEntries] = useState(['', '', '']);
+    // isCompleted: Indica si el usuario ya guardó su entrada de hoy en la base de datos.
+    const [isCompleted, setIsCompleted] = useState(false);
+    // loading: Estado de carga inicial mientras consultamos Firebase.
+    const [loading, setLoading] = useState(true);
 
-    // Usuario actual
+    // Acceso al usuario logueado.
     const { currentUser } = useAuth();
 
-    // Obtener la fecha de HOY en formato YYYY-MM-DD para usar como ID
+    /**
+     * getTodayDateId: Genera un ID basado en la fecha actual (YYYY-M-D).
+     */
     const getTodayDateId = () => {
         const now = new Date();
         return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
     };
 
-    // EFECTO: Comprobar si ya escribí hoy al cargar
+    /**
+     * EFECTO: Al cargar, verificamos en Firestore si ya existe una entrada para el día de hoy.
+     */
     useEffect(() => {
         if (!currentUser) return;
 
         const checkTodayEntry = async () => {
             try {
                 const dateId = getTodayDateId();
-                // Buscamos en la colección 'gratitude' el documento: userID_fecha
+                // El ID del documento es una combinación de UID_fecha para que sea único por día y usuario.
                 const docId = `${currentUser.uid}_${dateId}`;
                 const docRef = doc(db, 'gratitude', docId);
                 const docSnap = await getDoc(docRef);
@@ -49,20 +57,24 @@ const DiarioGratitud = () => {
         checkTodayEntry();
     }, [currentUser]);
 
-    // LÓGICA: Manejar cambios en los inputs de texto
+    /**
+     * handleInputChange: Actualiza el estado de una de las 3 líneas de texto.
+     */
     const handleInputChange = (index, value) => {
         const newEntries = [...entries];
         newEntries[index] = value;
         setEntries(newEntries);
     };
 
-    // LÓGICA: Guardar en Firebase
+    /**
+     * handleSave: Guarda los textos en Firestore y marca el diario como completado.
+     */
     const handleSave = async (e) => {
         e.preventDefault();
 
-        // Validar que no estén vacíos
+        // Evitamos que se guarden entradas vacías.
         if (entries.some(entry => entry.trim() === '')) {
-            alert('Por favor completa los 3 espacios.');
+            alert('Por favor completa los 3 espacios para reflexionar adecuadamente.');
             return;
         }
 
@@ -70,7 +82,6 @@ const DiarioGratitud = () => {
             const dateId = getTodayDateId();
             const docId = `${currentUser.uid}_${dateId}`;
 
-            // Guardamos: items (texto), fecha y timestamp
             await setDoc(doc(db, 'gratitude', docId), {
                 userId: currentUser.uid,
                 date: dateId,
@@ -81,20 +92,20 @@ const DiarioGratitud = () => {
             setIsCompleted(true);
         } catch (error) {
             console.error('Error guardando gratitud:', error);
-            alert('Error al guardar. Intenta de nuevo.');
+            alert('No se pudo guardar. Revisa tu conexión.');
         }
     };
 
-    if (loading) return null; // No mostrar nada mientras carga
+    if (loading) return null;
 
-    // Si ya completó hoy, mostramos mensaje de éxito
+    // Vista de éxito tras guardar.
     if (isCompleted) {
         return (
             <div className="diario-container diario-completado">
                 <CheckCircle size={48} className="icono-check" />
-                <h3 className="titulo-completado">¡Gratitud Registrada!</h3>
+                <h3 className="titulo-completado">¡Mente Positiva!</h3>
                 <p className="mensaje-positivo">
-                    Has empezado el día con la mentalidad correcta.
+                    Has registrado tu gratitud de hoy. Este hábito cambia tu cerebro.
                 </p>
             </div>
         );

@@ -16,20 +16,23 @@ const FRASES = [
     "Si te cansas, aprende a descansar, no a renunciar."
 ];
 
-// Componente: Frase Motivacional del Día
+/**
+ * FraseDiaria: Muestra una cita motivacional que cambia automáticamente cada día del año.
+ * El objetivo es ofrecer un pensamiento positivo nuevo cada vez que el usuario abre la app.
+ */
 const FraseDiaria = () => {
-    // Calculamos qué frase mostrar hoy
-    // Usamos useMemo para que no cambie cada vez que se renderiza, solo si cambia el día
+    // Calculamos qué frase mostrar hoy de forma estable.
+    // Usamos useMemo para evitar cálculos innecesarios si el componente se re-renderiza rápido.
     const quote = useMemo(() => {
-        // Obtenemos el día del año (0-365)
+        // Obtenemos el número del día actual dentro del año (de 0 a 365).
         const now = new Date();
         const start = new Date(now.getFullYear(), 0, 0);
         const diff = now - start;
         const oneDay = 1000 * 60 * 60 * 24;
         const dayOfYear = Math.floor(diff / oneDay);
 
-        // Usamos el día del año como índice (módulo longitud del array)
-        // Esto asegura que cada día sea una frase diferente pero consistente para todos
+        // Utilizamos el índice del día para seleccionar la frase.
+        // El operador % (módulo) permite reiniciar la cuenta si hay menos frases que días.
         return FRASES[dayOfYear % FRASES.length];
     }, []);
 

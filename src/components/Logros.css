@@ -15,74 +15,143 @@
     gap: 10px;
 }
 
-/* Grid de medallas (2 columnas) */
-.grid-medallas {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+/* Resumen de hábitos en la parte superior */
+.resumen-habitos-logros {
+    display: flex;
+    justify-content: center;
     gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
 }
 
-/* Tarjeta de una medalla */
-.medalla-card {
-    background-color: var(--bg-secondary);
+.habit-mini-logro {
+    background: var(--bg-secondary);
+    padding: 0.6rem 1rem;
     border-radius: var(--radius-md);
-    padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    border: 1px solid transparent;
-    transition: all 0.3s ease;
-    opacity: 0.5;
-    /* Bloqueada por defecto */
-    filter: grayscale(100%);
-    /* Gris por defecto */
+    min-width: 90px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Estado Desbloqueado */
+.habit-mini-name {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.habit-mini-days {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+}
+
+.days-num {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--brand-color);
+}
+
+.days-label {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+}
+
+/* Grid de medallas */
+.grid-medallas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.medalla-card {
+    background-color: var(--bg-secondary);
+    padding: 1.2rem 1rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+    opacity: 0.3;
+    filter: grayscale(1);
+    transition: all 0.4s ease;
+    border: 1px solid transparent;
+}
+
 .medalla-card.desbloqueada {
     opacity: 1;
-    filter: grayscale(0%);
-    border-color: rgba(255, 255, 255, 0.1);
-    background-color: rgba(255, 255, 255, 0.05);
+    filter: grayscale(0);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(231, 76, 60, 0.1) 100%);
+    border-color: rgba(231, 76, 60, 0.2);
 }
 
-/* Imagen de la medalla */
 .img-medalla {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    margin-bottom: 0.5rem;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    position: relative;
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+    display: inline-block;
 }
 
-/* Textos de la medalla */
+.unlocked-checkmark {
+    position: absolute;
+    bottom: -2px;
+    right: -5px;
+    background: #27ae60;
+    color: white;
+    border-radius: 50%;
+    padding: 2px;
+    border: 2px solid var(--bg-secondary);
+}
+
 .titulo-medalla {
     font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 2px;
+    font-weight: 700;
+    margin-bottom: 4px;
     color: var(--text-primary);
 }
 
 .desc-medalla {
     font-size: 0.75rem;
     color: var(--text-secondary);
+    line-height: 1.2;
 }
 
-/* Barra de progreso general */
+.unlocked-by-badges {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 10px;
+}
+
+.habit-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Barra de progreso global */
 .progreso-proximo-logro {
-    margin-top: 2rem;
-    background-color: var(--bg-secondary);
-    padding: 1rem;
-    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    padding: 1.2rem;
+    border-radius: var(--radius-lg);
 }
 
 .texto-progreso {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.dias-faltantes {
+    font-size: 0.75rem;
+    margin-top: 8px;
+    text-align: right;
+    color: var(--text-secondary);
+    opacity: 0.8;
 }
 
 .barra-fondo {

@@ -307,8 +307,43 @@ const CONSEJOS = [
     "Sigue adelante."
 ];
 
+// CONSEJOS ESPECÍFICOS POR HÁBITO
+const CONSEJOS_HABITOS = {
+    porn: [
+        "El porno es una fantasía pixelada, tú mereces una vida real.",
+        "Tu cerebro se está curando, no interrumpas el proceso de reinicio neuronal.",
+        "Recuerda la niebla mental que viene después. No vale la pena perder tu claridad.",
+        "La dopamina artificial te roba la motivación para metas reales.",
+        "Mira tus manos: tú decides qué haces con ellas en este momento."
+    ],
+    smoking: [
+        "Tus pulmones se están limpiando ahora mismo. No des un paso atrás.",
+        "Bebe un vaso de agua fría. El antojo de nicotina dura solo de 3 a 5 minutos.",
+        "Toma 3 respiraciones profundas. Siente el aire entrar sin obstáculos.",
+        "Fumar no quita el estrés, solo alivia la abstinencia que el mismo cigarro creó.",
+        "Retrasa el primer cigarro. Solo 10 minutos más. Puedes hacerlo."
+    ],
+    socialmedia: [
+        "Deja el móvil en otra habitación. Prueba 15 minutos de silencio real.",
+        "El scroll infinito es una trampa de dopamina barata diseñada para atraparte.",
+        "Mira a tu alrededor. El mundo real tiene más colores que tu pantalla.",
+        "No te compares con la vida editada de los demás. Concéntrate en la tuya.",
+        "Haz algo físico: toca madera, camina descalzo, siente el presente."
+    ],
+    sugar: [
+        "Come una pieza de fruta o bebe agua. A veces el hambre de dulce es solo sed.",
+        "El bajón de energía después del pico de azúcar será peor que este antojo.",
+        "El azúcar es combustible, no un premio emocional.",
+        "Tu cuerpo prefiere nutrientes reales. Dale lo que necesita, no lo que pide el impulso.",
+        "Lávate los dientes ahora. El sabor a menta quita las ganas de dulce."
+    ]
+};
+
 // LISTA GIGANTE DE ACCIONES CON ICONOS
 // Para que siempre haya 3 opciones nuevas y visuales
+/**
+ * POOL_ACCIONES: Lista de todas las acciones positivas que el sistema puede sugerir.
+ */
 const POOL_ACCIONES = [
     // Físico Intenso
     { icon: <Dumbbell size={32} />, title: "20 Flexiones", desc: "Al fallo. Quema esa energía.", color: "#e67e22" },
@@ -330,32 +365,58 @@ const POOL_ACCIONES = [
     { icon: <Gamepad2 size={32} />, title: "Juega a algo", desc: "Tetris o Ajedrez rápido.", color: "#95a5a6" }
 ];
 
-// Componente: Botón de Emergencia
-const BotonSOS = () => {
+/**
+ * BotonSOS: Componente de emergencia que se activa cuando el usuario siente urgencia de recaer.
+ * Ofrece frases motivacionales y 3 acciones aleatorias para distraer la mente.
+ */
+const BotonSOS = ({ habits = [] }) => {
+    // Aseguramos que habits sea un array para evitar errores de renderizado.
+    const safeHabits = Array.isArray(habits) ? habits : [];
+
     // ESTADOS
-    const [isActive, setIsActive] = useState(false);
-    const [currentTip, setCurrentTip] = useState("");
-    const [showActions, setShowActions] = useState(false);
+    const [isActive, setIsActive] = useState(false); // Si la pantalla de emergencia está visible.
+    const [currentTip, setCurrentTip] = useState(""); // La frase motivacional actual.
+    const [showActions, setShowActions] = useState(false); // Si estamos viendo la lista de 3 acciones.
+    const [randomActions, setRandomActions] = useState([]); // Las 3 acciones seleccionadas al azar.
 
-    // Estado para guardar las 3 acciones aleatorias del momento
-    const [randomActions, setRandomActions] = useState([]);
+    /**
+     * getRelevantTips: Filtra todos los consejos disponibles según los hábitos del usuario.
+     */
+    const getRelevantTips = () => {
+        let pool = [...CONSEJOS]; // Empezamos con los consejos universales.
 
-    // LÓGICA: Seleccionar 3 acciones al azar del pool gigante
+        safeHabits.forEach(h => {
+            if (CONSEJOS_HABITOS[h.id]) {
+                pool = [...pool, ...CONSEJOS_HABITOS[h.id]];
+            }
+        });
+
+        return pool;
+    };
+
+    /**
+     * pickRandomActions: Selecciona 3 ideas de distracción al azar.
+     */
     const pickRandomActions = () => {
-        // Copiamos y mezclamos el array
-        const shuffled = [...POOL_ACCIONES].sort(() => 0.5 - Math.random());
-        // Nos quedamos con las 3 primeras
+        const pool = [...POOL_ACCIONES];
+        const shuffled = pool.sort(() => 0.5 - Math.random());
         setRandomActions(shuffled.slice(0, 3));
     };
 
-    // LÓGICA: Abrir
+    /**
+     * activateSOS: Activa la pantalla de emergencia y carga el contenido inicial.
+     */
     const activateSOS = () => {
         setIsActive(true);
-        setCurrentTip(CONSEJOS[Math.floor(Math.random() * CONSEJOS.length)]);
-        pickRandomActions(); // Generamos acciones frescas
+        const tips = getRelevantTips();
+        setCurrentTip(tips[Math.floor(Math.random() * tips.length)]);
+        pickRandomActions();
         setShowActions(false);
     };
 
+    /**
+     * deactivateSOS: Cierra la pantalla de emergencia.
+     */
     const deactivateSOS = () => {
         setIsActive(false);
         setShowActions(false);
@@ -369,7 +430,6 @@ const BotonSOS = () => {
                 </button>
 
                 {!showActions ? (
-                    // VISTA 1: RESPIRA Y LEE CONSEJO
                     <>
                         <div className="circulo-respiracion">
                             <Heart size={64} fill="rgba(255,255,255,0.8)" stroke="none" />
@@ -379,7 +439,10 @@ const BotonSOS = () => {
                         <p className="texto-consejo">"{currentTip}"</p>
 
                         <button
-                            onClick={() => setCurrentTip(CONSEJOS[Math.floor(Math.random() * CONSEJOS.length)])}
+                            onClick={() => {
+                                const tips = getRelevantTips();
+                                setCurrentTip(tips[Math.floor(Math.random() * tips.length)]);
+                            }}
                             className="btn-texto"
                         >
                             Otro consejo
@@ -393,7 +456,6 @@ const BotonSOS = () => {
                         </button>
                     </>
                 ) : (
-                    // VISTA 2: ELIGE UNA ACCIÓN (ALEATORIAS)
                     <>
                         <h2 style={{ marginBottom: '2rem', fontSize: '1.5rem', fontWeight: 300 }}>
                             Haz una de estas 3:
@@ -415,7 +477,6 @@ const BotonSOS = () => {
                             ))}
                         </div>
 
-                        {/* Botones de navegación */}
                         <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
                             <button
                                 onClick={() => setShowActions(false)}

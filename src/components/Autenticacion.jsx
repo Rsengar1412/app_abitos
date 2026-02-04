@@ -3,19 +3,31 @@ import { useAuth } from '../contexts/AuthContext';
 import './Autenticacion.css';
 
 // Componente: Autenticación (Login / Registro / Recuperar)
+/**
+ * Autenticacion: Componente que gestiona el acceso de los usuarios.
+ * Incluye tres modos: Login (Inicio), Register (Registro) y Recover (Recuperación).
+ */
 const Autenticacion = () => {
-    // ESTADOS
-    const [mode, setMode] = useState('login'); // 'login' | 'register' | 'recover'
+    // mode: Controla qué formulario se muestra al usuario.
+    const [mode, setMode] = useState('login');
+
+    // email / password: Estados locales para los campos del formulario.
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    // error / msg: Canales para comunicar fallos o éxitos al usuario.
     const [error, setError] = useState('');
-    const [msg, setMsg] = useState(''); // Mensaje de éxito (para recuperación o registro)
+    const [msg, setMsg] = useState('');
+
+    // loading: Bloquea el botón de envío mientras se comunica con Firebase.
     const [loading, setLoading] = useState(false);
 
-    // Funciones del Contexto
+    // Obtenemos las funciones de autenticación del contexto global.
     const { login, register, resetPassword } = useAuth();
 
-    // LÓGICA: Enviar formulario
+    /**
+     * handleSubmit: Procesa el envío del formulario basándose en el modo activo (login/registro/recuperación).
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -24,29 +36,32 @@ const Autenticacion = () => {
 
         try {
             if (mode === 'login') {
+                // Intento de inicio de sesión estándar.
                 await login(email, password);
             } else if (mode === 'register') {
+                // Creación de cuenta nueva.
                 await register(email, password);
-                // ÉXITO AL REGISTRAR
                 setMsg('¡Cuenta creada correctamente! Iniciando sesión...');
-                // Pequeña pausa para que el usuario lea antes de entrar
+                // Retrasamos la entrada para que el usuario pueda leer el mensaje de éxito.
                 await new Promise(resolve => setTimeout(resolve, 1500));
             } else if (mode === 'recover') {
+                // Envío de correo electrónico para cambio de contraseña.
                 await resetPassword(email);
                 setMsg('Te hemos enviado un correo para restablecer tu contraseña. Revisa tu bandeja de entrada.');
             }
         } catch (err) {
-            console.error(err);
+            console.error("Error en autenticación:", err);
+            // Mapeo de errores de Firebase a mensajes legibles para el usuario.
             if (err.code === 'auth/wrong-password') {
-                setError('Contraseña incorrecta');
+                setError('La contraseña es incorrecta. Inténtalo de nuevo.');
             } else if (err.code === 'auth/user-not-found') {
-                setError('No existe cuenta con este email');
+                setError('No hay ninguna cuenta registrada con este correo.');
             } else if (err.code === 'auth/email-already-in-use') {
-                setError('Este email ya está registrado');
+                setError('Este correo electrónico ya está en uso por otra cuenta.');
             } else if (err.code === 'auth/weak-password') {
-                setError('La contraseña debe tener al menos 6 caracteres');
+                setError('La contraseña debe tener al menos 6 caracteres.');
             } else {
-                setError('Error al conectar. Verifica tus datos.');
+                setError('Hubo un error al conectar con el servidor. Revisa tu internet.');
             }
         } finally {
             setLoading(false);
@@ -56,15 +71,15 @@ const Autenticacion = () => {
     return (
         <div className="auth-container">
             <h2 className="titulo-auth">
-                {mode === 'login' && 'Iniciar Sesión'}
-                {mode === 'register' && 'Crear Cuenta'}
-                {mode === 'recover' && 'Recuperar Contraseña'}
+                {mode === 'login' && 'Bienvenido de nuevo'}
+                {mode === 'register' && 'Únete a Libre'}
+                {mode === 'recover' && 'Recuperar acceso'}
             </h2>
 
-            {/* Mensaje de error */}
+            {/* Visualización de errores si existen */}
             {error && <div className="error-auth">{error}</div>}
 
-            {/* Mensaje de ÉXITO (Verde) */}
+            {/* Visualización de mensajes de éxito */}
             {msg && (
                 <div className="success-auth" style={{
                     color: '#22c55e',
@@ -82,7 +97,7 @@ const Autenticacion = () => {
 
             <form onSubmit={handleSubmit} className="form-auth">
                 <div className="grupo-input">
-                    <label className="label-auth">Email</label>
+                    <label className="label-auth">Correo Electrónico</label>
                     <input
                         type="email"
                         required
@@ -93,6 +108,7 @@ const Autenticacion = () => {
                     />
                 </div>
 
+                {/* La contraseña solo se pide en login y registro */}
                 {mode !== 'recover' && (
                     <div className="grupo-input">
                         <label className="label-auth">Contraseña</label>
@@ -112,7 +128,7 @@ const Autenticacion = () => {
                     className="btn-submit-auth"
                     disabled={loading}
                 >
-                    {loading ? 'Cargando...' : (
+                    {loading ? 'Procesando...' : (
                         mode === 'login' ? 'Entrar' :
                             mode === 'register' ? 'Registrarse' : 'Enviar Correo'
                     )}
@@ -122,28 +138,29 @@ const Autenticacion = () => {
             <div className="texto-cambiar-modo">
                 {mode === 'login' && (
                     <>
+                        <p>¿No tienes cuenta aún?</p>
                         <button onClick={() => setMode('register')} className="btn-link">
-                            Crear cuenta nueva
+                            Crea una cuenta nueva
                         </button>
                         <br />
-                        <button onClick={() => setMode('recover')} className="btn-link" style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: '10px' }}>
-                            ¿Olvidaste tu contraseña?
+                        <button onClick={() => setMode('recover')} className="btn-link" style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: '20px' }}>
+                            ¿Has olvidado tu contraseña?
                         </button>
                     </>
                 )}
 
                 {mode === 'register' && (
                     <>
-                        ¿Ya tienes cuenta?
+                        <p>¿Ya eres parte de Libre?</p>
                         <button onClick={() => setMode('login')} className="btn-link">
-                            Inicia Sesión
+                            Inicia Sesión aquí
                         </button>
                     </>
                 )}
 
                 {mode === 'recover' && (
                     <button onClick={() => setMode('login')} className="btn-link">
-                        ← Volver a Iniciar Sesión
+                        ← Volver al inicio de sesión
                     </button>
                 )}
             </div>
