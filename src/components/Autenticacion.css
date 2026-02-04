@@ -1,0 +1,102 @@
+/* Contenedor centrado en pantalla */
+.auth-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Título */
+.titulo-auth {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Formulario */
+.form-auth {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Grupo de input (label + input) */
+.grupo-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label-auth {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.input-auth {
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.input-auth:focus {
+    outline: none;
+    border-color: var(--brand-color);
+}
+
+/* Botón principal (submit) */
+.btn-submit-auth {
+    padding: 12px;
+    background-color: var(--brand-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 1rem;
+}
+
+.btn-submit-auth:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Mensaje de error */
+.error-auth {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--marketing-red);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* Texto de "o cambiar a..." */
+.texto-cambiar-modo {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--brand-color);
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 5px;
+}
