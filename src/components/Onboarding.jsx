@@ -8,7 +8,12 @@ import {
     Hand,
     Eye,
     ChevronRight,
-    Sparkles
+    Sparkles,
+    Wine,
+    Beer,
+    Gamepad2,
+    Dices,
+    CupSoda
 } from 'lucide-react';
 import './Onboarding.css';
 
@@ -21,7 +26,11 @@ const PRESETS = [
     { id: 'masturbation', name: 'Masturbación', iconId: 'Hand', icon: <Hand size={24} />, color: '#3498db', rgb: '52, 152, 219' },
     { id: 'smoking', name: 'Fumar', iconId: 'Flame', icon: <Flame size={24} />, color: '#e67e22', rgb: '230, 126, 34' },
     { id: 'socialmedia', name: 'Redes Sociales', iconId: 'Smartphone', icon: <Smartphone size={24} />, color: '#9b59b6', rgb: '155, 89, 182' },
-    { id: 'sugar', name: 'Azúcar / Dulces', iconId: 'Coffee', icon: <Coffee size={24} />, color: '#f1c40f', rgb: '241, 196, 15' }
+    { id: 'sugar', name: 'Azúcar / Dulces', iconId: 'Coffee', icon: <Coffee size={24} />, color: '#f1c40f', rgb: '241, 196, 15' },
+    { id: 'alcohol', name: 'Alcohol', iconId: 'Wine', icon: <Wine size={24} />, color: '#8e44ad', rgb: '142, 68, 173' },
+    { id: 'caffeine', name: 'Cafeína', iconId: 'CupSoda', icon: <CupSoda size={24} />, color: '#d35400', rgb: '211, 84, 0' },
+    { id: 'gaming', name: 'Videojuegos', iconId: 'Gamepad2', icon: <Gamepad2 size={24} />, color: '#2c3e50', rgb: '44, 62, 80' },
+    { id: 'gambling', name: 'Apuestas', iconId: 'Dices', icon: <Dices size={24} />, color: '#27ae60', rgb: '39, 174, 96' }
 ];
 
 /**

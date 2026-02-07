@@ -63,13 +63,21 @@
 /* Grid de medallas */
 .grid-medallas {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    /*poner dos columnas*/
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
+    justify-items: center;
+
 }
 
 .medalla-card {
-    background-color: var(--bg-secondary);
+    /*que tenga el mismo ancho que el contenedor*/
+
+    width: 100%;
+    /*Color de las medataas que se vea mas claro*/
+
+    background-color: #616763;
     padding: 1.2rem 1rem;
     border-radius: var(--radius-md);
     text-align: center;
@@ -77,6 +85,7 @@
     filter: grayscale(1);
     transition: all 0.4s ease;
     border: 1px solid transparent;
+    
 }
 
 .medalla-card.desbloqueada {

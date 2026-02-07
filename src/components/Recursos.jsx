@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, ChevronDown, Moon, Brain, Shield, Coffee, Smartphone, Flame } from 'lucide-react';
+import { BookOpen, ChevronDown, Moon, Brain, Shield, Coffee, Smartphone, Flame, Wine, CupSoda, Gamepad2, Dices } from 'lucide-react';
 import './Recursos.css';
 
 /**
@@ -81,6 +81,51 @@ const HABIT_SPECIFIC_RESOURCES = {
             content: (
                 <>
                     <p>El azúcar genera un pico seguido de un bajón que te pide más azúcar. Rompe el ciclo con proteínas o grasas saludables.</p>
+                </>
+            )
+        }
+    ],
+    alcohol: [
+        {
+            icon: <Wine size={20} />,
+            title: "Reemplazo Social",
+            content: (
+                <>
+                    <p>En eventos sociales, pide agua con gas y limón o una bebida sin azúcar. Mantener algo en la mano reduce la presión social.</p>
+                    <p>La sobriedad es el nuevo superpoder: recuerda todo y mantén el control.</p>
+                </>
+            )
+        }
+    ],
+    caffeine: [
+        {
+            icon: <CupSoda size={20} />,
+            title: "Higiene del Sueño",
+            content: (
+                <>
+                    <p>La cafeína bloquea los receptores de adenosina que te indican que estás cansado. Sustitúyela por infusiones o agua fría al despertar.</p>
+                </>
+            )
+        }
+    ],
+    gaming: [
+        {
+            icon: <Gamepad2 size={20} />,
+            title: "Productividad Real",
+            content: (
+                <>
+                    <p>Usa la técnica de gamificación en tu vida real: asigna puntos a tus tareas diarias y 'sube de nivel' con tus objetivos personales.</p>
+                </>
+            )
+        }
+    ],
+    gambling: [
+        {
+            icon: <Dices size={20} />,
+            title: "Control Financiero",
+            content: (
+                <>
+                    <p>Elimina tus datos de pago de sitios de apuestas y limita tus transferencias diarias. El tiempo es tu activo más valioso.</p>
                 </>
             )
         }

@@ -1,9 +1,12 @@
 /* Barra superior con Salir y Añadir */
 .top-bar-contadores {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    /* CENTRAR BOTONES */
     align-items: center;
     margin-bottom: 2rem;
+    gap: 1rem;
+    width: 100%;
 }
 
 /* Botón de salir */
@@ -58,6 +61,9 @@
     margin-bottom: 2rem;
     color: var(--text-primary);
     text-align: center;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Grid para los contadores */
@@ -66,6 +72,10 @@
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
+    width: 100%;
+    justify-items: center;
+    /* CENTRAR HIJOS EN EL GRID */
+    justify-content: center;
 }
 
 /* Tarjeta individual de cada contador */
@@ -78,11 +88,15 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
+    /* CENTRAR CONTENIDO DE LA TARJETA */
+    text-align: center;
 }
 
 .tarjeta-contador:hover {
     transform: translateY(-5px);
-    background-color: var(--bg-primary);
+    background-color: #1a1a1a;
+    /* Un poco más claro al hover */
 }
 
 /* Borde branding cuando hay racha */
@@ -95,8 +109,13 @@
 .header-contador-dinamico {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    /* CENTRAR CONTENIDO */
+    gap: 1rem;
+    width: 100%;
     margin-bottom: 1.5rem;
+    position: relative;
+    text-align: center;
 }
 
 .icon-title-container {
@@ -118,6 +137,10 @@
     justify-content: center;
     opacity: 0.3;
     transition: all 0.2s;
+    position: absolute;
+    /* MANTENER EN LA ESQUINA */
+    top: 5px;
+    right: 5px;
 }
 
 .btn-delete-habit:hover {

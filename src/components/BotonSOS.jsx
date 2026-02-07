@@ -336,6 +336,34 @@ const CONSEJOS_HABITOS = {
         "El azúcar es combustible, no un premio emocional.",
         "Tu cuerpo prefiere nutrientes reales. Dale lo que necesita, no lo que pide el impulso.",
         "Lávate los dientes ahora. El sabor a menta quita las ganas de dulce."
+    ],
+    alcohol: [
+        "El alcohol nubla tu juicio. Mantente sobrio para tomar mejores decisiones.",
+        "Bebe un vaso de agua grande ahora mismo. Hidrata tu cerebro.",
+        "Recuerda la resaca y el remordimiento. No vale la pena por un momento de evasión.",
+        "Si estás ansioso, camina 10 minutos. Deja que la adrenalina se procese naturalmente.",
+        "Llama a alguien de confianza. Rompe el aislamiento que precede al consumo."
+    ],
+    caffeine: [
+        "Tu cuerpo sabe generar energía por sí solo. Dale tiempo para equilibrarse.",
+        "Bebe agua fría o una infusión sin cafeína. Engaña al ritual, no al cuerpo.",
+        "El bajón de cafeína es lo que te hace pedir más. Rompe el ciclo ahora.",
+        "Haz 5 minutos de estiramientos. Oxigena tu sangre de forma natural.",
+        "Si tienes sueño, descansa 15 minutos. Es lo que tu cuerpo realmente necesita."
+    ],
+    gaming: [
+        "Los logros en el juego son temporales, los logros en tu vida son para siempre.",
+        "Apaga la pantalla 15 minutos. Mira a lo lejos para relajar la vista y la mente.",
+        "El juego es un escape. Afronta lo que estás evitando ahora mismo.",
+        "Sal a la calle sin dispositivos. Siente el mundo sin filtros digitales.",
+        "Haz una tarea doméstica rápida. Siente la satisfacción de algo real terminado."
+    ],
+    gambling: [
+        "La casa siempre gana. La verdadera victoria es no poner un pie en el juego.",
+        "Recuerda el valor de tu dinero y el tiempo que tardaste en ganarlo.",
+        "El juego no es una inversión, es una trampa emocional para tu dopamina.",
+        "Bloquea el acceso a las apps o sitios de juego inmediatamente.",
+        "Habla con alguien sobre este impulso. El secreto es el mejor aliado de la apuesta."
     ]
 };
 

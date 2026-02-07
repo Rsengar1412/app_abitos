@@ -1,21 +1,20 @@
-/* Botón Principal SOS (Rojo) */
+/* === ESTILOS PARA EL BOTÓN SOS Y PANTALLA DE EMERGENCIA === */
+
+/* El botón flotante o fijo que activa la emergencia */
 .boton-sos-principal {
     width: 100%;
-    padding: 1rem;
-    background-color: var(--marketing-red);
-    color: white;
-    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    font-size: 1.1rem;
+    padding: 1.2rem;
+    background: var(--marketing-red);
+    color: white;
+    border-radius: var(--radius-md);
     font-weight: bold;
-    box-shadow: var(--shadow-md);
-    margin-top: 1rem;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.1s;
+    font-size: 1.1rem;
+    margin: 2rem 0;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
 .boton-sos-principal:active {

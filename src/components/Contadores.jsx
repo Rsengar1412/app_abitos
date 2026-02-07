@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Trophy, LogOut, Eye, Hand, AlertTriangle, ArrowLeft, Clock, Plus, Trash2, Flame, Smartphone, Coffee, Ghost } from 'lucide-react';
+import { RefreshCw, Trophy, LogOut, Eye, Hand, AlertTriangle, ArrowLeft, Clock, Plus, Trash2, Flame, Smartphone, Coffee, Ghost, Wine, CupSoda, Gamepad2, Dices } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -15,7 +15,11 @@ const ICON_MAP = {
     Flame: <Flame size={20} />,
     Smartphone: <Smartphone size={20} />,
     Coffee: <Coffee size={20} />,
-    Ghost: <Ghost size={20} />
+    Ghost: <Ghost size={20} />,
+    Wine: <Wine size={20} />,
+    CupSoda: <CupSoda size={20} />,
+    Gamepad2: <Gamepad2 size={20} />,
+    Dices: <Dices size={20} />
 };
 
 /**
@@ -24,9 +28,13 @@ const ICON_MAP = {
 const PRESET_HABITS = [
     { id: 'porn', name: 'Pornografía', icon: 'Eye', color: '#e74c3c' },
     { id: 'masturbation', name: 'Masturbación', icon: 'Hand', color: '#3498db' },
-    { id: 'smoking', name: 'Fumar', icon: 'Flame', color: '#95a5a6' },
+    { id: 'smoking', name: 'Fumar', icon: 'Flame', color: '#e67e22' },
     { id: 'socialmedia', name: 'Redes Sociales', icon: 'Smartphone', color: '#9b59b6' },
-    { id: 'sugar', name: 'Azúcar/Dulces', icon: 'Coffee', color: '#f1c40f' }
+    { id: 'sugar', name: 'Azúcar/Dulces', icon: 'Coffee', color: '#f1c40f' },
+    { id: 'alcohol', name: 'Alcohol', icon: 'Wine', color: '#8e44ad' },
+    { id: 'caffeine', name: 'Cafeína', icon: 'CupSoda', color: '#d35400' },
+    { id: 'gaming', name: 'Videojuegos', icon: 'Gamepad2', color: '#2c3e50' },
+    { id: 'gambling', name: 'Apuestas', icon: 'Dices', color: '#27ae60' }
 ];
 
 /**
@@ -56,6 +64,18 @@ const CONSECUENCIAS = {
             "📉 Pérdida de atracción y magnetismo personal."
         ],
         consejo: "¿Vale la pena perder tu 'drive' por 5 segundos de placer? Piénsalo."
+    },
+    alcohol: {
+        titulo: "⚠ ALCOHOL Y CONTROL ⚠",
+        subtitulo: "La sobriedad es tu mayor activo.",
+        texto: "Si reinicias ahora, recuerda las consecuencias físicas y mentales:",
+        lista: [
+            "🧠 El alcohol es un depresor del sistema nervioso.",
+            "🥃 Causa inflamación sistémica y deshidratación.",
+            "📉 Mañana la ansiedad (hangxiety) será mucho peor.",
+            "🔄 Romperás la confianza que has construido contigo mismo."
+        ],
+        consejo: "¿De verdad quieres despertar con resaca y arrepentimiento? Sigue adelante."
     },
     default: {
         titulo: "⚠ ¿ESTÁS SEGURO? ⚠",

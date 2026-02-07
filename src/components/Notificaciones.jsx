@@ -10,6 +10,10 @@ const HABIT_MESSAGES = {
     smoking: { title: "Aire Puro", body: "¿Has notado cómo respiras hoy? Sigue así." },
     socialmedia: { title: "Mundo Real", body: "Toda la vida pasa fuera de la pantalla. Levanta la vista." },
     sugar: { title: "Energía Estable", body: "Tu cuerpo prefiere combustible de calidad. Elige bien hoy." },
+    alcohol: { title: "Mente Clara", body: "No necesitas anestesia para vivir. Disfruta tu lucidez hoy." },
+    caffeine: { title: "Energía Natural", body: "Deja que tu cuerpo encuentre su propio ritmo. Tú puedes." },
+    gaming: { title: "Misión: Vida Real", body: "El mejor nivel es el que estás construyendo fuera de la pantalla." },
+    gambling: { title: "Victoria Segura", body: "La única forma de ganar es no jugar. Tu dinero y tu tiempo valen más." },
     default: { title: "Mantente Fuerte", body: "Un paso más hacia tu mejor versión." }
 };
 
