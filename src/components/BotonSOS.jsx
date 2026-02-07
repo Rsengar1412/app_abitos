@@ -7,6 +7,14 @@ import {
 import './BotonSOS.css';
 
 // CONSEJOS: Lista de frases MANUALMENTE insertada por el usuario (INTACTA)
+//consejo dependiendo de las opciones que tenga el usuario
+// si tiene el habito de no fap
+// si tiene el habito de no porno
+// si tiene el habito de no masturbacion
+// si tiene el habito de no fap
+// si tiene el habito de no porno
+// si tiene el habito de no masturbacion
+
 const CONSEJOS = [
     // ===== RESPIRACIÓN / URGENCIA =====
     "La urgencia es una ola: sube, rompe y baja. Aguanta 90 segundos.",
@@ -309,13 +317,15 @@ const CONSEJOS = [
 
 // CONSEJOS ESPECÍFICOS POR HÁBITO
 const CONSEJOS_HABITOS = {
+    // si tiene el habito de no fap
     porn: [
         "El porno es una fantasía pixelada, tú mereces una vida real.",
         "Tu cerebro se está curando, no interrumpas el proceso de reinicio neuronal.",
         "Recuerda la niebla mental que viene después. No vale la pena perder tu claridad.",
         "La dopamina artificial te roba la motivación para metas reales.",
-        "Mira tus manos: tú decides qué haces con ellas en este momento."
+        "Mira tus manos: tú decides qué haces con ellas en este momento.",
     ],
+    // si tiene el habito de no fumar
     smoking: [
         "Tus pulmones se están limpiando ahora mismo. No des un paso atrás.",
         "Bebe un vaso de agua fría. El antojo de nicotina dura solo de 3 a 5 minutos.",
@@ -323,6 +333,7 @@ const CONSEJOS_HABITOS = {
         "Fumar no quita el estrés, solo alivia la abstinencia que el mismo cigarro creó.",
         "Retrasa el primer cigarro. Solo 10 minutos más. Puedes hacerlo."
     ],
+    // si tiene el habito de no redes sociales
     socialmedia: [
         "Deja el móvil en otra habitación. Prueba 15 minutos de silencio real.",
         "El scroll infinito es una trampa de dopamina barata diseñada para atraparte.",
@@ -330,6 +341,7 @@ const CONSEJOS_HABITOS = {
         "No te compares con la vida editada de los demás. Concéntrate en la tuya.",
         "Haz algo físico: toca madera, camina descalzo, siente el presente."
     ],
+    // si tiene el habito de no azucar
     sugar: [
         "Come una pieza de fruta o bebe agua. A veces el hambre de dulce es solo sed.",
         "El bajón de energía después del pico de azúcar será peor que este antojo.",
@@ -337,6 +349,7 @@ const CONSEJOS_HABITOS = {
         "Tu cuerpo prefiere nutrientes reales. Dale lo que necesita, no lo que pide el impulso.",
         "Lávate los dientes ahora. El sabor a menta quita las ganas de dulce."
     ],
+    // si tiene el habito de no alcohol
     alcohol: [
         "El alcohol nubla tu juicio. Mantente sobrio para tomar mejores decisiones.",
         "Bebe un vaso de agua grande ahora mismo. Hidrata tu cerebro.",
@@ -344,6 +357,7 @@ const CONSEJOS_HABITOS = {
         "Si estás ansioso, camina 10 minutos. Deja que la adrenalina se procese naturalmente.",
         "Llama a alguien de confianza. Rompe el aislamiento que precede al consumo."
     ],
+    // si tiene el habito de no cafeina
     caffeine: [
         "Tu cuerpo sabe generar energía por sí solo. Dale tiempo para equilibrarse.",
         "Bebe agua fría o una infusión sin cafeína. Engaña al ritual, no al cuerpo.",
@@ -351,6 +365,7 @@ const CONSEJOS_HABITOS = {
         "Haz 5 minutos de estiramientos. Oxigena tu sangre de forma natural.",
         "Si tienes sueño, descansa 15 minutos. Es lo que tu cuerpo realmente necesita."
     ],
+    // si tiene el habito de no videojuegos
     gaming: [
         "Los logros en el juego son temporales, los logros en tu vida son para siempre.",
         "Apaga la pantalla 15 minutos. Mira a lo lejos para relajar la vista y la mente.",
@@ -358,6 +373,7 @@ const CONSEJOS_HABITOS = {
         "Sal a la calle sin dispositivos. Siente el mundo sin filtros digitales.",
         "Haz una tarea doméstica rápida. Siente la satisfacción de algo real terminado."
     ],
+    // si tiene el habito de no apuestas
     gambling: [
         "La casa siempre gana. La verdadera victoria es no poner un pie en el juego.",
         "Recuerda el valor de tu dinero y el tiempo que tardaste en ganarlo.",
@@ -412,12 +428,39 @@ const BotonSOS = ({ habits = [] }) => {
      */
     const getRelevantTips = () => {
         let pool = [...CONSEJOS]; // Empezamos con los consejos universales.
-
-        safeHabits.forEach(h => {
-            if (CONSEJOS_HABITOS[h.id]) {
-                pool = [...pool, ...CONSEJOS_HABITOS[h.id]];
-            }
-        });
+        //mostrar el consejo dependiendo de cual es la adición que deje debe de aparecer los consejo de cada acidicón  
+        //si tiene el habito de no fumar
+        if (safeHabits.some(h => h.id === "smoking")) {
+            pool = [...pool, ...CONSEJOS_HABITOS["smoking"]];
+        }
+        //si tiene el habito de no redes sociales
+        if (safeHabits.some(h => h.id === "socialmedia")) {
+            pool = [...pool, ...CONSEJOS_HABITOS["socialmedia"]];
+        }
+        //si tiene el habito de no azucar
+        if (safeHabits.some(h => h.id === "sugar")) {
+            pool = [...pool, ...CONSEJOS_HABITOS["sugar"]];
+        }
+        //si tiene el habito de no alcohol
+        if (safeHabits.some(h => h.id === "alcohol")) {
+            pool = [...pool, ...CONSEJOS_HABITOS["alcohol"]];
+        }
+        //si tiene el habito de no cafeina
+        if (safeHabits.some(h => h.id === "caffeine")) {
+            pool = [...pool, ...CONSEJOS_HABITOS["caffeine"]];
+        }
+        //si tiene el habito de no videojuegos
+        if (safeHabits.some(h => h.id === "gaming")) {
+            pool = [...pool, ...CONSEJOS_HABITOS["gaming"]];
+        }
+        //si tiene el habito de no apuestas
+        if (safeHabits.some(h => h.id === "gambling")) {
+            pool = [...pool, ...CONSEJOS_HABITOS["gambling"]];
+        }
+        //si tiene el habito de no pornografia
+        if (safeHabits.some(h => h.id === "porn")) {
+            pool = [...pool, ...CONSEJOS_HABITOS["porn"]];
+        }
 
         return pool;
     };
@@ -464,6 +507,8 @@ const BotonSOS = ({ habits = [] }) => {
                         </div>
 
                         <h2 className="titulo-respira">Respira</h2>
+                        {/* mostrar el consejo dependiendo de las opciones que tenga el usuario */}
+                        {/* si tiene el habito de no fumar */}
                         <p className="texto-consejo">"{currentTip}"</p>
 
                         <button
@@ -475,7 +520,7 @@ const BotonSOS = ({ habits = [] }) => {
                         >
                             Otro consejo
                         </button>
-
+                            {/*acción de emerjecia dependiendo de cual es la adición que deje debe de aparecer los consejo de cada acidicón  */}
                         <button
                             onClick={() => setShowActions(true)}
                             className="btn-ver-acciones"

@@ -337,10 +337,24 @@
     border: none;
     cursor: pointer;
     transition: transform 0.1s;
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    /* al pasar el cursor por el boton cambia el color a rojo y aumenta de tamaño */
+    transition: all 0.2s;
+}
+
+.btn-cancelar-recaida:hover {
+    background-color: var(--marketing-red);
+    color: white;
+    opacity: 1;
+    transform: scale(1.02);
 }
 
 .btn-cancelar-recaida:active {
     transform: scale(0.98);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
 .btn-confirmar-recaida {

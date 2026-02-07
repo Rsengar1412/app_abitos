@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+//importamos los iconos de lucide-react para los botones de cada hábito (refresh, trofeo, logout, etc.) 1ue significan en español (refresh, trofeo, logout, etc.)
 import { RefreshCw, Trophy, LogOut, Eye, Hand, AlertTriangle, ArrowLeft, Clock, Plus, Trash2, Flame, Smartphone, Coffee, Ghost, Wine, CupSoda, Gamepad2, Dices } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
@@ -8,6 +9,9 @@ import './Contadores.css';
 /**
  * ICON_MAP: Mapeo de nombres de iconos (strings) a componentes de Lucide.
  * Esto nos permite guardar solo el nombre en la base de datos y renderizar el componente real aquí.
+ * Se pueden agregar mas iconos de lucide-react en el futuro. 
+ * como por ejemplo: 
+ * adicciones de las mujres que tenga ellas 
  */
 const ICON_MAP = {
     Eye: <Eye size={20} />,
@@ -24,6 +28,8 @@ const ICON_MAP = {
 
 /**
  * PRESET_HABITS: Configuración visual rápida para añadir nuevos hábitos desde el modal.
+ * se puede añadir mas hábitos en el futuro. 
+ * 
  */
 const PRESET_HABITS = [
     { id: 'porn', name: 'Pornografía', icon: 'Eye', color: '#e74c3c' },
@@ -39,6 +45,8 @@ const PRESET_HABITS = [
 
 /**
  * CONSECUENCIAS: Mensajes motivacionales y científicos que aparecen al intentar reiniciar una racha.
+ * se puede añadir mas consecuencias en el futuro. 
+ * 
  */
 const CONSECUENCIAS = {
     porn: {
@@ -126,8 +134,10 @@ const Contadores = ({ habits = [] }) => {
      * removeHabit: Elimina permanentemente un hábito de la lista.
      */
     const removeHabit = async (id) => {
+        // Confirmación antes de eliminar el hábito
         if (!window.confirm("¿Estás seguro de que quieres eliminar este hábito por completo? Borrarás todo el historial.")) return;
         const updatedHabits = habits.filter(h => h.id !== id).map(({ display, days, ...rest }) => rest);
+        // Limpiamos campos temporales para Firebase con try catch
         try {
             const docRef = doc(db, 'users', currentUser.uid);
             await updateDoc(docRef, { habits: updatedHabits });
@@ -138,15 +148,17 @@ const Contadores = ({ habits = [] }) => {
      * confirmReset: Pone el contador a cero (hoy) para el hábito seleccionado.
      */
     const confirmReset = async () => {
+        // si no hay hábito seleccionado, no hacemos nada
         if (!warningHabit) return;
         const now = new Date().toISOString();
+        // Actualizamos el hábito seleccionado con la fecha actual
         const updatedHabits = habits.map(({ display, days, ...rest }) => {
             if (rest.id === warningHabit.id) {
                 return { ...rest, startDate: now };
             }
             return rest;
         });
-
+        // Actualizamos el hábito seleccionado con la fecha actual
         try {
             const docRef = doc(db, 'users', currentUser.uid);
             await updateDoc(docRef, { habits: updatedHabits });
@@ -212,9 +224,40 @@ const Contadores = ({ habits = [] }) => {
                                 <Clock size={14} /> <span>¡Primeras horas clave!</span>
                             </div>
                         )}
-                        {habit.display.unit === 'días' && habit.display.value > 7 && (
+                        {/* Mensaje de racha activa si es menor de 7 días */}
+                        {habit.display.unit === 'días' && habit.display.value < 7 && (
                             <div className="mensaje-racha">
-                                <Trophy size={16} /> <span>¡Imparable!</span>
+                                <Trophy size={16} /> <span>¡Estos son los primeros días más difíciles, no te rindas!</span>
+                            </div>
+                        )}
+                        {/* Mensaje de racha activa si es mayor o igual a 7 días */}
+                        {habit.display.unit === 'días' && habit.display.value >= 7 && (
+                            <div className="mensaje-racha">
+                                <Trophy size={16} /> <span>¡Ya has superado la primera semana, no te rindas!</span>
+                            </div>
+                        )}
+                        {/* Mensaje de racha activa si es mayor o igual a 30 días */}
+                        {habit.display.unit === 'días' && habit.display.value >= 30 && (
+                            <div className="mensaje-racha">
+                                <Trophy size={16} /> <span>¡Ya has superado el primer mes, no te rindas!</span>
+                            </div>
+                        )}
+                        {/* Mensaje de racha activa si es mayor o igual a 90 días */}
+                        {habit.display.unit === 'días' && habit.display.value >= 90 && (
+                            <div className="mensaje-racha">
+                                <Trophy size={16} /> <span>¡Ya has superado el primer trimestre, no te rindas!</span>
+                            </div>
+                        )}
+                        {/* Mensaje de racha activa si es mayor o igual a 180 días */}
+                        {habit.display.unit === 'días' && habit.display.value >= 180 && (
+                            <div className="mensaje-racha">
+                                <Trophy size={16} /> <span>¡Ya has superado el primer semestre, no te rindas!</span>
+                            </div>
+                        )}
+                        {/* Mensaje de racha activa si es mayor o igual a 365 días */}
+                        {habit.display.unit === 'días' && habit.display.value >= 365 && (
+                            <div className="mensaje-racha">
+                                <Trophy size={16} /> <span>¡Ya has superado el primer año, no te rindas!</span>
                             </div>
                         )}
 
@@ -233,6 +276,12 @@ const Contadores = ({ habits = [] }) => {
                     <div className="modal-recaida">
                         <h3 className="titulo-modal">Elige un nuevo desafío</h3>
                         <div className="grid-presets">
+                            {/* esto es lo que hace es que tiene un mapa de iconos y los muestra en el modal
+                            el "button lo que tine es : 
+                            key : el id 
+                            classNAme: nombre del estilo del boton 
+                            onclick: para predion 
+                            disable: par auq aparezca que no se puede pulsar */}
                             {PRESET_HABITS.map(preset => (
                                 <button
                                     key={preset.id}
@@ -240,11 +289,18 @@ const Contadores = ({ habits = [] }) => {
                                     onClick={() => addHabit(preset)}
                                     disabled={habits.some(h => h.id === preset.id)}
                                 >
+                                    {/* esto es lo que hace es que tiene un mapa de iconos y los muestra en el modal
+                                    el "button lo que tine es :
+                                    key : el id
+                                    classNAme: nombre del estilo del boton
+                                    onclick: para predion
+                                    disable: par auq aparezca que no se puede pulsar */}
                                     {ICON_MAP[preset.icon]}
                                     <span>{preset.name}</span>
                                 </button>
                             ))}
                         </div>
+                        {/* esto es un boton que cierra el modal */}
                         <button onClick={() => setShowAddModal(false)} className="btn-cancelar-recaida" style={{ marginTop: '1rem' }}>
                             Cancelar
                         </button>
