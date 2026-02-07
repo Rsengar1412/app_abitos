@@ -1,16 +1,24 @@
-# React + Vite
+# Libre — Un día a la vez
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web progresiva (PWA) para acompañar el camino de recuperación de hábitos. Permite registrar uno o varios hábitos, llevar contadores de días, diario de gratitud, notificaciones, logros y un botón SOS con recursos de apoyo.
 
-Currently, two official plugins are available:
+## Características
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Autenticación** — Inicio de sesión y registro con Firebase Auth
+- **Onboarding** — Configuración inicial de hábitos para nuevos usuarios
+- **Contadores** — Días transcurridos por cada hábito desde la fecha de inicio
+- **Frase diaria** — Motivación con una frase aleatoria
+- **Diario de gratitud** — Espacio para anotar por qué estás agradecido hoy
+- **Notificaciones** — Alertas personalizadas según tus hábitos
+- **Progreso de recuperación** — Hitos y beneficios según tiempo alcanzado
+- **Logros** — Medallas y badges al cumplir rachas (7, 30, 90, 365 días)
+- **Botón SOS** — Acceso rápido a recursos cuando sientes urgencia
+- **Recursos** — Consejos y ayuda según los hábitos seleccionados
 
-## React Compiler
+## Licencia
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Licencia: MIT
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+*Cada momento cuenta. Mantente fuerte.*
