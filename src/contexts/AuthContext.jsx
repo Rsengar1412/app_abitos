@@ -6,7 +6,7 @@ import {
     onAuthStateChanged,
     sendPasswordResetEmail // IMPORTADO
 } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth } from '@/lib/firebase';
 
 /**
  * AuthContext: Contexto global de React para manejar la autenticación del usuario.

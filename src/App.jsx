@@ -1,177 +1,87 @@
-import React, { useState, useEffect } from 'react';
-/**
- * AuthProvider: Proveedor del contexto de autenticación.
- * useAuth: Hook para acceder al usuario actual y funciones de login/logout.
- */
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from './firebase';
+import React from 'react';
 
-/**
- * IMPORTACIÓN DE COMPONENTES
- * Todos los componentes principales de la interfaz.
- */
-import Autenticacion from './components/Autenticacion';
-import Contadores from './components/Contadores';
-import BotonSOS from './components/BotonSOS';
-import Recursos from './components/Recursos';
-import Logros from './components/Logros';
-import FraseDiaria from './components/FraseDiaria';
-import ProgresoRecuperacion from './components/ProgresoRecuperacion';
-import DiarioGratitud from './components/DiarioGratitud';
-import Notificaciones from './components/Notificaciones';
-import Onboarding from './components/Onboarding';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { useUserHabits } from '@/hooks/useUserHabits';
 
-// Estilos globales de la aplicación
-import './App.css';
+import Autenticacion from '@/sections/Autenticacion';
+import Onboarding from '@/sections/Onboarding';
+import Contadores from '@/sections/Contadores';
+import FraseDiaria from '@/sections/FraseDiaria';
+import DiarioGratitud from '@/sections/DiarioGratitud';
+import Notificaciones from '@/sections/Notificaciones';
+import ProgresoRecuperacion from '@/sections/ProgresoRecuperacion';
+import Logros from '@/sections/Logros';
+import BotonSOS from '@/sections/BotonSOS';
+import Recursos from '@/sections/Recursos';
 
-/**
- * AppContent: Componente que maneja la lógica de visualización basada en el estado del usuario.
- */
-function AppContent() {
-  // currentUser: Información del usuario logueado desde Firebase Auth.
-  const { currentUser } = useAuth();
+import ThemeToggle from '@/components/ThemeToggle';
 
-  // habits: Lista de hábitos que el usuario está siguiendo.
-  const [habits, setHabits] = useState([]);
+const themeToggleClass = 'fixed top-4 right-4 z-[1000] sm:top-3 sm:right-3 [top:max(1rem,env(safe-area-inset-top))] [right:max(1rem,env(safe-area-inset-right))]';
 
-  // maxDays: El récord máximo de días limpio entre todos los hábitos.
-  const [maxDays, setMaxDays] = useState(0);
-
-  // loading: Estado para controlar mientras se cargan los datos de Firestore.
-  const [loading, setLoading] = useState(true);
-
-  /**
-   * EFECTO: Escuchar cambios en Firestore en tiempo real.
-   * Se activa cuando cambia el usuario (login/logout).
-   */
-  useEffect(() => {
-    // Si no hay usuario, no hay nada que cargar.
-    if (!currentUser) {
-      console.log("AppContent: No hay usuario logueado, saltando carga de datos.");
-      setLoading(false);
-      return;
-    }
-
-    console.log("AppContent: Usuario logueado, iniciando carga de datos para UID:", currentUser.uid);
-
-    // Timeout de seguridad: Si Firestore tarda más de 3 segundos, quitamos la pantalla de carga.
-    // Esto evita que la app se quede en negro si hay problemas de red o permisos.
-    const safetyTimeout = setTimeout(() => {
-      console.warn("AppContent: Timeout de carga de datos de Firestore alcanzado (3s). Forzando fin de carga.");
-      setLoading(false);
-    }, 3000);
-
-    // Suscripción al documento del usuario en la colección 'users'.
-    const unsub = onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
-      try {
-        if (doc.exists()) {
-          const data = doc.data();
-          console.log("AppContent: Datos de usuario recibidos de Firestore.", data);
-          // Aseguramos que habits sea un array para evitar errores de renderizado.
-          const userHabits = Array.isArray(data.habits) ? data.habits : [];
-
-          const now = new Date();
-          // Procesamos cada hábito para calcular los días transcurridos desde su startDate.
-          const processed = userHabits.map(h => {
-            const startDate = h.startDate ? new Date(h.startDate) : new Date();
-            const diff = now - startDate;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            // Validamos que 'days' sea un número válido.
-            return { ...h, days: isNaN(days) ? 0 : days };
-          });
-
-          setHabits(processed);
-          // Calculamos el máximo de días entre todos los hábitos para el progreso general.
-          setMaxDays(processed.length > 0 ? Math.max(...processed.map(h => h.days)) : 0);
-        } else {
-          // Si el documento no existe (usuario nuevo sin onboarding), limpiamos hábitos.
-          setHabits([]);
-          setMaxDays(0);
-        }
-      } catch (err) {
-        console.error("Error procesando datos del usuario:", err);
-      } finally {
-        // Marcamos la carga como completada.
-        setLoading(false);
-        clearTimeout(safetyTimeout);
-      }
-    }, (error) => {
-      console.error("Error en el listener de Firebase (posibles permisos):", error);
-      setLoading(false);
-      clearTimeout(safetyTimeout);
-    });
-
-    // Cleanup: Cancelar la suscripción al desmontar el componente.
-    return () => {
-      unsub();
-      clearTimeout(safetyTimeout);
-    };
-  }, [currentUser]);
-
-  /**
-   * FLUJO DE RENDERIZADO
-   */
-
-  // 1. Si el usuario NO está logueado, mostramos la pantalla de Login/Registro.
-  if (!currentUser) {
-    return <Autenticacion />;
-  }
-
-  // 2. Si todavía estamos cargando datos de Firestore, mostramos una pantalla de espera.
-  if (loading) {
-    return (
-      <div className="onboarding-overlay" style={{ background: '#000', color: '#fff' }}>
-        <div style={{ textAlign: 'center' }}>
-          <h2 style={{ marginBottom: '10px' }}>Preparando tu camino...</h2>
-          <p style={{ opacity: 0.7, fontStyle: 'italic' }}>Libre - Un día a la vez</p>
+function LoadingScreen() {
+  return (
+    <>
+      <ThemeToggle className={themeToggleClass} />
+      <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-bg-main text-text-primary p-5 sm:p-4 [padding-left:max(1.25rem,env(safe-area-inset-left))] [padding-right:max(1.25rem,env(safe-area-inset-right))]">
+        <div className="text-center max-w-[90vw]">
+          <h2 className="mb-2.5 text-lg font-semibold sm:text-base">Preparando tu camino...</h2>
+          <p className="opacity-70 italic text-sm sm:text-xs">Libre - Un día a la vez</p>
         </div>
       </div>
-    );
-  }
+    </>
+  );
+}
 
-  // 3. Si el usuario está logueado pero NO tiene hábitos configurados, mostramos el Onboarding.
-  if (habits.length === 0) {
-    return <Onboarding uid={currentUser.uid} />;
-  }
-
-  // 4. Pantalla Principal: Se muestra cuando el usuario está logueado y tiene al menos un hábito.
-  console.log("Renderizando App Principal con hábitos:", habits.length);
+function AppPrincipal({ habits, maxDays }) {
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1 className="app-titulo">Libre</h1>
+    <div
+      className="
+        min-h-screen w-full max-w-6xl mx-auto flex flex-col overflow-x-hidden
+        px-3 py-4
+        sm:px-4 sm:py-5
+        md:px-6 md:py-6
+        lg:px-8 lg:py-8
+        xl:px-10 xl:py-10
+        [padding-left:max(0.75rem,env(safe-area-inset-left))]
+        [padding-right:max(0.75rem,env(safe-area-inset-right))]
+      "
+    >
+      <header className="flex justify-center items-center shrink-0 py-3 sm:py-4 md:py-5 lg:py-6">
+        <h1 className="text-base font-semibold uppercase tracking-widest text-text-secondary sm:text-lg sm:tracking-[0.2em] md:text-xl lg:text-2xl">
+          Libre
+        </h1>
       </header>
 
-      <main className="app-main">
-        {/* === SECCIONES DE LA APP === */}
+      <ThemeToggle className={themeToggleClass} />
 
-        {/* Contadores core: Muestran el tiempo transcurrido en cada hábito. */}
-        <Contadores habits={habits} />
-
-        {/* Motivación diaria: Una frase aleatoria para inspirar. */}
-        <FraseDiaria />
-
-        {/* Diario Personal: Espacio para anotar por qué estamos agradecidos hoy. */}
-        <DiarioGratitud />
-
-        {/* Gestión de Alertas: Configuración de notificaciones personalizadas. */}
-        <Notificaciones habits={habits} />
-
-        {/* Gamificación: Hitos y beneficios científicos desbloqueados por tiempo. */}
-        <ProgresoRecuperacion maxDays={maxDays} />
-
-        {/* Premios: Medallas visuales para celebrar las rachas. */}
-        <Logros habits={habits} currentMaxDays={maxDays} />
-
-        {/* Botón de Emergencia: Recursos rápidos para cuando el usuario siente urgencia. */}
-        <BotonSOS habits={habits} />
-
-        {/* Biblioteca de Ayuda: Consejos específicos según los hábitos seleccionados. */}
-        <Recursos habits={habits} />
+      <main className="w-full flex-1 min-w-0 flex flex-col gap-4 sm:gap-5 md:gap-6 lg:grid lg:grid-cols-3 lg:gap-5 xl:gap-6 lg:items-start lg:content-start">
+        <section className="w-full min-w-0 lg:col-span-3">
+          <Contadores habits={habits} />
+        </section>
+        <section className="w-full min-w-0 lg:col-span-2">
+          <FraseDiaria />
+        </section>
+        <section className="w-full min-w-0 lg:col-span-1">
+          <DiarioGratitud />
+        </section>
+        <section className="w-full min-w-0 lg:col-span-1">
+          <Notificaciones habits={habits} />
+        </section>
+        <section className="w-full min-w-0 lg:col-span-2">
+          <ProgresoRecuperacion maxDays={maxDays} />
+        </section>
+        <section className="w-full min-w-0 lg:col-span-2">
+          <Logros habits={habits} currentMaxDays={maxDays} />
+        </section>
+        <section className="w-full min-w-0 lg:col-span-1">
+          <BotonSOS habits={habits} />
+        </section>
+        <section className="w-full min-w-0 lg:col-span-3">
+          <Recursos habits={habits} />
+        </section>
       </main>
 
-      <footer className="app-footer">
+      <footer className="shrink-0 mt-6 pt-4 sm:mt-8 sm:pt-5 md:mt-10 md:pt-6 lg:mt-12 lg:pt-8 text-center text-text-secondary opacity-60 text-xs sm:text-sm pb-[env(safe-area-inset-bottom)]">
         <p>Cada momento cuenta. Mantente fuerte.</p>
       </footer>
     </div>
@@ -179,8 +89,35 @@ function AppContent() {
 }
 
 /**
- * App: Componente raíz que envuelve la aplicación en el contexto de Auth.
+ * AppContent: Decide qué pantalla mostrar según sesión y datos del usuario (habits).
  */
+function AppContent() {
+  const { currentUser } = useAuth();
+  const { habits, maxDays, loading } = useUserHabits(currentUser);
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen w-screen flex justify-center items-center">
+        <ThemeToggle className={themeToggleClass} />
+        <Autenticacion />
+      </div>
+    );
+  }
+
+  if (loading) return <LoadingScreen />;
+
+  if (habits.length === 0) {
+    return (
+      <div className="min-h-screen w-full overflow-x-hidden">
+        <ThemeToggle className={themeToggleClass} />
+        <Onboarding uid={currentUser.uid} />
+      </div>
+    );
+  }
+
+  return <AppPrincipal habits={habits} maxDays={maxDays} />;
+}
+
 function App() {
   return (
     <AuthProvider>

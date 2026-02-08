@@ -1,22 +1,80 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
+  <head>
+    <!-- ========== CODIFICACIÓN Y VIEWPORT ========== -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#1a1a1a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Libre" />
-  <link rel="apple-touch-icon" href="/icon.svg" />
-  <title>Libre - Un día a la vez</title>
-</head>
+    <!-- ========== TÍTULO Y DESCRIPCIÓN PRINCIPAL ========== -->
+    <!-- Configura: nombre de la app y frase que aparece en pestañas y resultados de búsqueda -->
+    <title>Libre - Un día a la vez</title>
+    <meta name="description" content="App de apoyo para el camino de recuperación de hábitos. Contadores, diario de gratitud, logros y recursos. Un día a la vez." />
+    <!-- Palabras clave para SEO (opcional, algunos buscadores lo ignoran) -->
+    <meta name="keywords" content="hábitos, recuperación, contador de días, gratitud, Libre, app" />
+    <!-- Autor o entidad (opcional) -->
+    <meta name="author" content="Libre" />
+    <!-- Instrucciones para rastreadores: index,follow = permitir indexar y seguir enlaces -->
+    <meta name="robots" content="index, follow" />
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
-</body>
+    <!-- ========== OPEN GRAPH (Facebook, LinkedIn, WhatsApp, etc.) ========== -->
+    <!-- Configura: cómo se ve el enlace cuando se comparte en redes sociales -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Libre - Un día a la vez" />
+    <meta property="og:description" content="Tu camino hacia la libertad. App de apoyo para recuperación de hábitos." />
+    <!-- URL canónica de la página (cámbiala por tu dominio real al publicar) -->
+    <meta property="og:url" content="https://tu-dominio.com/" />
+    <!-- Imagen que se muestra al compartir (recomendado 1200x630 px) -->
+    <meta property="og:image" content="https://tu-dominio.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="Libre" />
 
+    <!-- ========== TWITTER CARD ========== -->
+    <!-- Configura: cómo se ve el enlace al compartir en Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Libre - Un día a la vez" />
+    <meta name="twitter:description" content="Tu camino hacia la libertad. App de apoyo para recuperación de hábitos." />
+    <meta name="twitter:image" content="https://tu-dominio.com/og-image.png" />
+    <!-- @usuario de Twitter de la app o autor (opcional) -->
+    <!-- <meta name="twitter:site" content="@libre_app" /> -->
+
+    <!-- ========== PWA Y TEMA ========== -->
+    <!-- Color de la barra de estado del navegador (debe coincidir con theme_color del manifest) -->
+    <meta name="theme-color" content="#1a1a1a" />
+    <!-- Color de fondo al cargar la PWA (evita flash blanco) -->
+    <meta name="msapplication-TileColor" content="#1a1a1a" />
+
+    <!-- Aplica tema guardado (claro/oscuro) antes de pintar para evitar parpadeo -->
+    <script>
+      (function () {
+        var t = localStorage.getItem("libre-theme");
+        if (t !== "light" && t !== "dark")
+          t = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", t);
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute("content", t === "dark" ? "#1a1a1a" : "#f5f5f5");
+      })();
+    </script>
+
+    <!-- ========== FAVICON E ICONOS ========== -->
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ========== APPLE (iOS / Safari) ========== -->
+    <!-- Permite añadir a la pantalla de inicio como app -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Estilo de la barra de estado: black-translucent | default | black -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- Nombre bajo el icono al añadir a inicio -->
+    <meta name="apple-mobile-web-app-title" content="Libre" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <!-- Splash screen en iOS (opcional: crea imágenes para cada tamaño) -->
+    <!-- <link rel="apple-touch-startup-image" href="/splash-2048x2732.png" /> -->
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

@@ -1,26 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db } from '@/lib/firebase';
 import {
-    Smartphone,
-    Flame,
-    Coffee,
-    Hand,
-    Eye,
-    ChevronRight,
-    Sparkles,
-    Wine,
-    Beer,
-    Gamepad2,
-    Dices,
-    CupSoda
+    Smartphone, Flame, Coffee, Hand, Eye, ChevronRight, Sparkles,
+    Wine, Gamepad2, Dices, CupSoda
 } from 'lucide-react';
-import './Onboarding.css';
 
-/**
- * PRESETS: Configuración inicial de hábitos disponibles para el usuario.
- * Cada uno tiene su ID, nombre, icono de Lucide, color principal y valores RGB para CSS.
- */
 const PRESETS = [
     { id: 'porn', name: 'Pornografía', iconId: 'Eye', icon: <Eye size={24} />, color: '#e74c3c', rgb: '231, 76, 60' },
     { id: 'masturbation', name: 'Masturbación', iconId: 'Hand', icon: <Hand size={24} />, color: '#3498db', rgb: '52, 152, 219' },
@@ -33,47 +18,31 @@ const PRESETS = [
     { id: 'gambling', name: 'Apuestas', iconId: 'Dices', icon: <Dices size={24} />, color: '#27ae60', rgb: '39, 174, 96' }
 ];
 
-/**
- * Onboarding: Componente que se muestra a los usuarios nuevos.
- * Permite seleccionar los hábitos que quieren dejar y los guarda en la base de datos.
- */
 const Onboarding = ({ uid }) => {
-    // selected: Estado que guarda los hábitos que el usuario ha marcado.
     const [selected, setSelected] = useState([]);
-    // loading: Controla el estado visual mientras se guarda en Firebase.
     const [loading, setLoading] = useState(false);
 
-    /**
-     * toggleHabit: Añade o quita un hábito de la lista de seleccionados.
-     */
     const toggleHabit = (preset) => {
-        const alreadySelected = selected.some(s => s.id === preset.id);
-        if (alreadySelected) {
+        if (selected.some(s => s.id === preset.id)) {
             setSelected(selected.filter(s => s.id !== preset.id));
         } else {
             setSelected([...selected, preset]);
         }
     };
 
-    /**
-     * startApp: Guarda los hábitos seleccionados en Firestore y activa la app principal.
-     */
     const startApp = async () => {
         if (selected.length === 0 || loading) return;
         setLoading(true);
         try {
             const docRef = doc(db, 'users', uid);
             const now = new Date().toISOString();
-            // Mapeamos los seleccionados al formato que espera el resto de la app.
             const habitsToSave = selected.map(h => ({
                 id: h.id,
                 name: h.name,
-                icon: h.iconId, // Guardamos el ID del icono para el mapeo dinámico.
+                icon: h.iconId,
                 color: h.color,
                 startDate: now
             }));
-
-            // Usamos merge: true para no borrar otros datos que pudiera tener el perfil del usuario.
             await setDoc(docRef, { habits: habitsToSave }, { merge: true });
         } catch (error) {
             console.error("Error al guardar onboarding:", error);
@@ -84,47 +53,48 @@ const Onboarding = ({ uid }) => {
     };
 
     return (
-        <div className="onboarding-overlay">
-            <div className="onboarding-card">
-                <div className="onboarding-header">
-                    <div className="icon-welcome">
+        <div className="fixed inset-0 flex items-center justify-center z-[2000] p-5 overflow-y-auto bg-gradient-to-br from-[#1a1a1a] to-black sm:p-4">
+            <div className="w-full max-w-[500px] rounded-[32px] p-8 text-center border border-white/10 shadow-2xl bg-gradient-to-br from-[#1e1e1e] to-[#141414] animate-fade-in sm:p-6 sm:rounded-3xl">
+                <div className="mb-6">
+                    <div className="flex justify-center">
                         <Sparkles size={40} color="#e74c3c" />
                     </div>
-                    <h1>Bienvenido a Libre</h1>
-                    <p>Hoy empieza tu nueva vida. ¿Qué hábitos quieres dejar atrás?</p>
+                    <h1 className="mt-6 mb-2 text-3xl font-extrabold bg-gradient-to-br from-white to-gray-500 bg-clip-text text-transparent sm:text-2xl sm:mt-4">
+                        Bienvenido a Libre
+                    </h1>
+                    <p className="text-text-secondary text-lg leading-relaxed mb-10 sm:text-base sm:mb-8">
+                        Hoy empieza tu nueva vida. ¿Qué hábitos quieres dejar atrás?
+                    </p>
                 </div>
 
-                {/* Grid con las opciones de hábitos */}
-                <div className="onboarding-grid">
+                <div className="grid grid-cols-2 gap-3 mb-8 sm:grid-cols-1">
                     {PRESETS.map((p) => {
                         const isSelected = selected.some(s => s.id === p.id);
                         return (
                             <button
                                 key={p.id}
-                                className={`onboarding-item ${isSelected ? 'active' : ''}`}
+                                type="button"
+                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer ${isSelected ? 'border-brand bg-brand/20 shadow-lg' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
                                 onClick={() => toggleHabit(p)}
-                                style={{
-                                    '--habit-color': p.color,
-                                    '--habit-rgb': p.rgb
-                                }}
                             >
-                                <div className="item-icon">{p.icon}</div>
-                                <span className="item-name">{p.name}</span>
+                                <div className="flex items-center justify-center text-text-primary">{p.icon}</div>
+                                <span className="text-sm font-medium text-text-primary">{p.name}</span>
                             </button>
                         );
                     })}
                 </div>
 
-                <div className="onboarding-footer">
+                <div>
                     <button
-                        className="btn-start"
+                        type="button"
+                        className="w-full py-5 px-5 rounded-full bg-brand text-white font-bold text-lg flex items-center justify-center gap-2.5 border-0 cursor-pointer transition-all shadow-lg shadow-brand/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-600 disabled:shadow-none hover:scale-[1.02] hover:brightness-110 sm:py-4 sm:text-base"
                         disabled={selected.length === 0 || loading}
                         onClick={startApp}
                     >
                         {loading ? 'Preparando todo...' : 'Comenzar mi viaje'}
                         {!loading && <ChevronRight size={20} />}
                     </button>
-                    <p className="footer-note">Podrás añadir más hábitos después si lo deseas.</p>
+                    <p className="text-sm text-text-secondary mt-5">Podrás añadir más hábitos después si lo deseas.</p>
                 </div>
             </div>
         </div>
