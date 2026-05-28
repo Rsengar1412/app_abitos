@@ -1,23 +1,64 @@
-# Libre — Un día a la vez
+# Libre - Un dia a la vez
 
-Aplicación web progresiva (PWA) para acompañar el camino de recuperación de hábitos. Permite registrar uno o varios hábitos, llevar contadores de días, diario de gratitud, notificaciones, logros y un botón SOS con recursos de apoyo.
+> **Idioma / Language:** [Español](./README.md) | [English](./README.en.md)
 
-## Características
+Aplicacion web progresiva (PWA) para acompañar procesos de recuperacion de habitos con seguimiento diario, apoyo emocional y herramientas de emergencia.
 
-- **Autenticación** — Inicio de sesión y registro con Firebase Auth
-- **Onboarding** — Configuración inicial de hábitos para nuevos usuarios
-- **Contadores** — Días transcurridos por cada hábito desde la fecha de inicio
-- **Frase diaria** — Motivación con una frase aleatoria
-- **Diario de gratitud** — Espacio para anotar por qué estás agradecido hoy
-- **Notificaciones** — Alertas personalizadas según tus hábitos
-- **Progreso de recuperación** — Hitos y beneficios según tiempo alcanzado
-- **Logros** — Medallas y badges al cumplir rachas (7, 30, 90, 365 días)
-- **Botón SOS** — Acceso rápido a recursos cuando sientes urgencia
-- **Recursos** — Consejos y ayuda según los hábitos seleccionados
+![Vista de la aplicacion Libre](./screenshot.png)
 
-## Licencia
+## Caracteristicas principales
 
-Licencia: MIT
+- **Autenticacion** con Firebase Auth (registro, login y recuperacion de contraseña).
+- **Modo demo** para probar la app sin crear una cuenta.
+- **Onboarding** inicial para seleccionar habitos personalizados.
+- **Contadores** por habito con progreso por horas y dias.
+- **Diario de gratitud** para registrar reflexiones diarias.
+- **Notificaciones** configurables por habito.
+- **Progreso y logros** con hitos visuales.
+- **Boton SOS** con consejos y acciones inmediatas de apoyo.
+
+## Stack tecnico
+
+- React 19 + Vite 7
+- Firebase (Auth + Firestore)
+- Tailwind CSS
+- ESLint + Prettier + markdownlint
+- React Doctor
+
+## Scripts utiles
+
+```bash
+npm install
+npm run dev
+npm run lint
+npm run build
+npm run doctor
+npm run lint:md
+npm run format
+```
+
+## CI/CD
+
+Workflows de GitHub Actions incluidos:
+
+- `CI`: ejecuta lint + build en `push` y `pull_request`.
+- `Deploy`: publica a GitHub Pages en `main`.
+
+## Informacion
+
+| | |
+| --- | --- |
+| **Repositorio** | [github.com/Rsengar1412/app_abitos](https://github.com/Rsengar1412/app_abitos) |
+| **Licencia** | [MIT](./LICENSE) |
+
+## 👑 Contributors
+
+<a href="https://github.com/Rsengar1412/app_abitos/graphs/contributors">
+  <img
+    src="https://contrib.rocks/image?repo=Rsengar1412/app_abitos"
+    alt="Contributors"
+  />
+</a>
 
 ---
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Autenticacion = () => {
@@ -116,14 +117,33 @@ const Autenticacion = () => {
         </button>
 
         {mode === 'login' && (
-          <button
-            type="button"
-            disabled={loading}
-            onClick={loginAsDemo}
-            className="w-full py-3 px-3 rounded-sm border border-brand/50 text-brand text-base font-semibold cursor-pointer transition-colors hover:bg-brand/10 disabled:opacity-70 disabled:cursor-not-allowed sm:py-2.5 sm:px-3"
-          >
-            Probar modo demo
-          </button>
+          <>
+            <div className="relative my-1" aria-hidden="true">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-white/10" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-bg-main px-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-text-secondary">
+                  o
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              disabled={loading}
+              onClick={loginAsDemo}
+              className="group w-full flex items-center justify-center gap-2.5 rounded-sm border border-border-default bg-bg-secondary px-4 py-3.5 text-center shadow-sm transition-all duration-fast hover:border-brand hover:bg-border-default active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:py-3"
+            >
+              <Sparkles size={18} className="shrink-0 text-brand" aria-hidden />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-text-primary">Probar modo demo</span>
+                <span className="mt-0.5 block text-xs text-text-secondary">
+                  Explora la app sin crear cuenta
+                </span>
+              </span>
+            </button>
+          </>
         )}
       </form>
 
