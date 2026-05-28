@@ -11,7 +11,9 @@ const ACHIEVEMENTS = [
     { days: 365, title: "Leyenda", desc: "Una vida nueva", icon: "👑" }
 ];
 
-const Logros = ({ habits = [], currentMaxDays = 0 }) => {
+const EMPTY_HABITS = [];
+
+const Logros = ({ habits = EMPTY_HABITS, currentMaxDays = 0 }) => {
     const nextAchievement = ACHIEVEMENTS.find(a => a.days > currentMaxDays) || ACHIEVEMENTS[ACHIEVEMENTS.length - 1];
     const lastAchDays = ACHIEVEMENTS.filter(a => a.days <= currentMaxDays).pop()?.days || 0;
     const progressPercent = Math.min(100, Math.max(0, ((currentMaxDays - lastAchDays) / (nextAchievement.days - lastAchDays)) * 100));
@@ -39,16 +41,16 @@ const Logros = ({ habits = [], currentMaxDays = 0 }) => {
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-8 justify-items-center sm:gap-3">
-                {ACHIEVEMENTS.map((ach, idx) => {
+                {ACHIEVEMENTS.map((ach) => {
                     const isUnlocked = currentMaxDays >= ach.days;
                     const unlockedBy = habits.filter(h => h.days >= ach.days);
                     return (
                         <div
-                            key={idx}
+                            key={ach.days}
                             className={`w-full p-4 rounded-md text-center opacity-30 grayscale transition-all duration-400 border border-transparent ${isUnlocked ? 'opacity-100 grayscale-0 bg-gradient-to-br from-bg-secondary to-brand/10 border-brand/20' : 'bg-[#616763]'}`}
                         >
                             <div className="relative text-4xl mb-3 inline-block">
-                                <span role="img" aria-label={ach.title}>{ach.icon}</span>
+                                <span aria-label={ach.title}>{ach.icon}</span>
                                 {isUnlocked && <CheckCircle2 className="absolute -bottom-0.5 -right-1 bg-success text-white rounded-full p-0.5 border-2 border-bg-secondary" size={16} />}
                             </div>
                             <h4 className="text-sm font-bold mb-1 text-text-primary">{ach.title}</h4>
@@ -56,7 +58,7 @@ const Logros = ({ habits = [], currentMaxDays = 0 }) => {
                             {unlockedBy.length > 0 && (
                                 <div className="flex justify-center gap-1 mt-2.5">
                                     {unlockedBy.map(h => (
-                                        <span key={h.id} className="w-1.5 h-1.5 rounded-full shadow-sm" style={{ backgroundColor: h.color }} title={h.name} />
+                                        <span key={h.id} className="size-1.5 rounded-full shadow-sm" style={{ backgroundColor: h.color }} title={h.name} />
                                     ))}
                                 </div>
                             )}

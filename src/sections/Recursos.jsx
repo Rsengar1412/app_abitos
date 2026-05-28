@@ -41,7 +41,9 @@ const HABIT_SPECIFIC_RESOURCES = {
     gambling: [{ icon: <Dices size={20} />, title: "Control Financiero", content: <><p>Elimina tus datos de pago de sitios de apuestas y limita tus transferencias diarias. El tiempo es tu activo más valioso.</p></> }]
 };
 
-const Recursos = ({ habits = [] }) => {
+const EMPTY_HABITS = [];
+
+const Recursos = ({ habits = EMPTY_HABITS }) => {
     const [openIndex, setOpenIndex] = useState(null);
     const safeHabits = Array.isArray(habits) ? habits : [];
 
@@ -67,9 +69,10 @@ const Recursos = ({ habits = [] }) => {
 
             <div className="grid gap-4">
                 {resources.map((item, idx) => (
-                    <div key={idx} className="bg-bg-primary/50 rounded-md overflow-hidden transition-all duration-300">
-                        <div
-                            className="flex justify-between items-center p-4 cursor-pointer select-none hover:bg-white/5"
+                    <div key={item.id ?? item.title} className="bg-bg-primary/50 rounded-md overflow-hidden transition-all duration-300">
+                        <button
+                            type="button"
+                            className="w-full flex justify-between items-center p-4 cursor-pointer select-none hover:bg-white/5"
                             onClick={() => toggle(idx)}
                         >
                             <div className="flex items-center gap-3 text-text-primary">
@@ -81,7 +84,7 @@ const Recursos = ({ habits = [] }) => {
                                 className="text-text-secondary transition-transform duration-300"
                                 style={{ transform: openIndex === idx ? 'rotate(180deg)' : 'rotate(0)' }}
                             />
-                        </div>
+                        </button>
                         {openIndex === idx && (
                             <div className="px-4 pb-4 text-sm text-text-secondary leading-relaxed border-t border-white/5 pt-4 [&>p]:mb-3 [&>ul]:list-disc [&>ul]:ml-6 [&>ul]:mb-3 [&>li]:mb-1">
                                 {item.content}

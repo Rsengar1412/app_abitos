@@ -9,6 +9,8 @@ const Autenticacion = () => {
     const [msg, setMsg] = useState('');
     const [loading, setLoading] = useState(false);
     const { login, register, resetPassword } = useAuth();
+    const emailId = 'auth-email';
+    const passwordId = 'auth-password';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -53,18 +55,20 @@ const Autenticacion = () => {
             )}
 
             {msg && (
-                <div className="mb-4 py-3 px-3 rounded-lg border border-green-500/30 bg-green-500/10 text-green-600 font-bold text-center text-sm">
+                <div className="mb-4 p-3 rounded-lg border border-green-500/30 bg-green-500/10 text-green-600 font-bold text-center text-sm">
                     {msg}
                 </div>
             )}
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm text-text-secondary font-medium">Correo Electrónico</label>
+                    <label htmlFor={emailId} className="text-sm text-text-secondary font-medium">Correo Electrónico</label>
                     <input
+                        id={emailId}
                         type="email"
                         required
                         className="w-full py-3 px-3 rounded-sm border border-white/10 bg-bg-primary text-text-primary text-base outline-none transition-colors focus:border-brand sm:py-2.5 sm:px-3"
+                        aria-label="Correo electrónico"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="tu@email.com"
@@ -73,11 +77,13 @@ const Autenticacion = () => {
 
                 {mode !== 'recover' && (
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm text-text-secondary font-medium">Contraseña</label>
+                        <label htmlFor={passwordId} className="text-sm text-text-secondary font-medium">Contraseña</label>
                         <input
+                            id={passwordId}
                             type="password"
                             required
                             className="w-full py-3 px-3 rounded-sm border border-white/10 bg-bg-primary text-text-primary text-base outline-none transition-colors focus:border-brand sm:py-2.5 sm:px-3"
+                            aria-label="Contraseña"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Mínimo 6 caracteres"

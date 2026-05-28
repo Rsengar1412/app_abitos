@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, use, useState, useEffect } from 'react';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -16,8 +16,9 @@ const AuthContext = createContext();
 /**
  * useAuth: Hook personalizado para obtener los datos de autenticación de forma sencilla.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
-    const context = useContext(AuthContext);
+    const context = use(AuthContext);
     if (!context) {
         throw new Error('useAuth debe usarse dentro de un AuthProvider');
     }

@@ -20,11 +20,11 @@ const ProgresoRecuperacion = ({ maxDays = 0 }) => {
             </h3>
 
             <div className="relative flex flex-col gap-0 border-l-2 border-bg-primary pl-6 ml-2">
-                {MILESTONES.map((milestone, idx) => {
+                {MILESTONES.map((milestone) => {
                     const unlocked = isUnlocked(milestone.days);
                     return (
                         <div
-                            key={idx}
+                            key={milestone.days}
                             className={`flex gap-4 relative pb-8 opacity-50 transition-opacity last:pb-0 ${unlocked ? 'opacity-100' : ''}`}
                         >
                             <div className={`absolute left-[-9px] w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm border-2 transition-all bg-bg-primary border-text-secondary text-text-secondary ${unlocked ? 'bg-success border-success text-white' : ''}`}>
@@ -36,8 +36,8 @@ const ProgresoRecuperacion = ({ maxDays = 0 }) => {
                                     {milestone.title}
                                 </h4>
                                 <ul className="text-sm text-text-secondary leading-relaxed m-0 list-disc ml-4">
-                                    {milestone.benefits.map((benefit, i) => (
-                                        <li key={i} className="mb-1">{benefit}</li>
+                                    {milestone.benefits.map((benefit) => (
+                                        <li key={`${milestone.days}-${benefit}`} className="mb-1">{benefit}</li>
                                     ))}
                                 </ul>
                             </div>

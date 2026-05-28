@@ -1,31 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Bell, BellOff, Check } from 'lucide-react';
 
-const HABIT_MESSAGES = {
-    porn: { title: "Dopamina Real", body: "No busques lo fácil. Busca lo que te hace sentir orgulloso." },
-    smoking: { title: "Aire Puro", body: "¿Has notado cómo respiras hoy? Sigue así." },
-    socialmedia: { title: "Mundo Real", body: "Toda la vida pasa fuera de la pantalla. Levanta la vista." },
-    sugar: { title: "Energía Estable", body: "Tu cuerpo prefiere combustible de calidad. Elige bien hoy." },
-    alcohol: { title: "Mente Clara", body: "No necesitas anestesia para vivir. Disfruta tu lucidez hoy." },
-    caffeine: { title: "Energía Natural", body: "Deja que tu cuerpo encuentre su propio ritmo. Tú puedes." },
-    gaming: { title: "Misión: Vida Real", body: "El mejor nivel es el que estás construyendo fuera de la pantalla." },
-    gambling: { title: "Victoria Segura", body: "La única forma de ganar es no jugar. Tu dinero y tu tiempo valen más." },
-    default: { title: "Mantente Fuerte", body: "Un paso más hacia tu mejor versión." }
-};
+const EMPTY_HABITS = [];
+const NOTIFICATIONS_KEY = 'notificationsEnabled:v1';
+const HABIT_REMINDERS_KEY = 'habitReminders:v1';
 
-const Notificaciones = ({ habits = [] }) => {
+const Notificaciones = ({ habits = EMPTY_HABITS }) => {
     const safeHabits = Array.isArray(habits) ? habits : [];
-    const [permission, setPermission] = useState('default');
-    const [enabled, setEnabled] = useState(false);
-    const [activeHabitsReminders, setActiveHabitsReminders] = useState({});
-
-    useEffect(() => {
-        if ('Notification' in window) {
-            setPermission(Notification.permission);
-            setEnabled(localStorage.getItem('notificationsEnabled') === 'true');
-            setActiveHabitsReminders(JSON.parse(localStorage.getItem('habitReminders') || '{}'));
-        }
-    }, []);
+    const [permission, setPermission] = useState(() => ('Notification' in window ? Notification.permission : 'default'));
+    const [enabled, setEnabled] = useState(() => localStorage.getItem(NOTIFICATIONS_KEY) === 'true');
+    const [activeHabitsReminders, setActiveHabitsReminders] = useState(() => JSON.parse(localStorage.getItem(HABIT_REMINDERS_KEY) || '{}'));
 
     const requestPermission = async () => {
         if (!('Notification' in window)) return;
@@ -33,7 +17,7 @@ const Notificaciones = ({ habits = [] }) => {
         setPermission(result);
         if (result === 'granted') {
             setEnabled(true);
-            localStorage.setItem('notificationsEnabled', 'true');
+            localStorage.setItem(NOTIFICATIONS_KEY, 'true');
             new Notification('¡Soporte Activo!', { body: 'Recibirás recordatorios personalizados para tus hábitos.', icon: '/icon.svg' });
         }
     };
@@ -41,13 +25,13 @@ const Notificaciones = ({ habits = [] }) => {
     const toggleNotification = () => {
         const next = !enabled;
         setEnabled(next);
-        localStorage.setItem('notificationsEnabled', next ? 'true' : 'false');
+        localStorage.setItem(NOTIFICATIONS_KEY, next ? 'true' : 'false');
     };
 
     const toggleHabitReminder = (id) => {
         const next = { ...activeHabitsReminders, [id]: !activeHabitsReminders[id] };
         setActiveHabitsReminders(next);
-        localStorage.setItem('habitReminders', JSON.stringify(next));
+        localStorage.setItem(HABIT_REMINDERS_KEY, JSON.stringify(next));
     };
 
     if (!('Notification' in window)) return null;
@@ -80,7 +64,7 @@ const Notificaciones = ({ habits = [] }) => {
                                 className={`flex items-center gap-3 py-2.5 px-2.5 rounded-sm cursor-pointer transition-all bg-bg-primary border border-white/5 text-text-secondary hover:border-brand ${activeHabitsReminders[h.id] ? 'bg-white/10 text-text-primary border-white/20' : ''}`}
                                 onClick={() => toggleHabitReminder(h.id)}
                             >
-                                <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: h.color }} />
+                                <div className="size-2.5 rounded-full shrink-0" style={{ backgroundColor: h.color }} />
                                 <span className="text-sm flex-1 text-left font-medium">{h.name}</span>
                                 {activeHabitsReminders[h.id] && <Check size={14} className="text-[#2ecc71]" />}
                             </button>

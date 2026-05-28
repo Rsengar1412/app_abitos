@@ -1,11 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, use, useState, useEffect } from 'react';
 
 const STORAGE_KEY = 'libre-theme';
 
 const ThemeContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
-  const context = useContext(ThemeContext);
+  const context = use(ThemeContext);
   if (!context) {
     throw new Error('useTheme debe usarse dentro de ThemeProvider');
   }
@@ -19,7 +20,9 @@ function getInitialTheme() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved === 'light' || saved === 'dark') return saved;
-  } catch (_) {}
+  } catch {
+    // Ignore read errors from storage.
+  }
   if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: light)').matches) {
     return 'light';
   }
@@ -37,7 +40,9 @@ export const ThemeProvider = ({ children }) => {
     if (meta) meta.setAttribute('content', theme === 'dark' ? '#1a1a1a' : '#f5f5f5');
     try {
       localStorage.setItem(STORAGE_KEY, theme);
-    } catch (_) {}
+    } catch {
+      // Ignore write errors from storage.
+    }
   }, [theme]);
 
   const toggleTheme = () => {

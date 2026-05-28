@@ -59,7 +59,7 @@ const Onboarding = ({ uid }) => {
                     <div className="flex justify-center">
                         <Sparkles size={40} color="#e74c3c" />
                     </div>
-                    <h1 className="mt-6 mb-2 text-3xl font-extrabold bg-gradient-to-br from-white to-gray-500 bg-clip-text text-transparent sm:text-2xl sm:mt-4">
+                    <h1 className="mt-6 mb-2 text-3xl font-extrabold text-text-primary sm:text-2xl sm:mt-4">
                         Bienvenido a Libre
                     </h1>
                     <p className="text-text-secondary text-lg leading-relaxed mb-10 sm:text-base sm:mb-8">

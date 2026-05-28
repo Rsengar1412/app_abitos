@@ -37,7 +37,9 @@ const POOL_ACCIONES = [
     { icon: <ShieldAlert size={32} />, title: "Modo Avión", desc: "Desconecta 15 minutos.", color: "#c0392b" }
 ];
 
-const BotonSOS = ({ habits = [] }) => {
+const EMPTY_HABITS = [];
+
+const BotonSOS = ({ habits = EMPTY_HABITS }) => {
     const safeHabits = Array.isArray(habits) ? habits : [];
     const [isActive, setIsActive] = useState(false);
     const [currentTip, setCurrentTip] = useState("");
@@ -53,7 +55,7 @@ const BotonSOS = ({ habits = [] }) => {
     };
 
     const pickRandomActions = () => {
-        const shuffled = [...POOL_ACCIONES].sort(() => 0.5 - Math.random());
+        const shuffled = POOL_ACCIONES.toSorted(() => 0.5 - Math.random());
         setRandomActions(shuffled.slice(0, 3));
     };
 
@@ -65,6 +67,11 @@ const BotonSOS = ({ habits = [] }) => {
         setShowActions(false);
     };
 
+    const pickRandomTip = () => {
+        const tips = getRelevantTips();
+        setCurrentTip(tips[Math.floor(Math.random() * tips.length)]);
+    };
+
     const deactivateSOS = () => {
         setIsActive(false);
         setShowActions(false);
@@ -74,8 +81,9 @@ const BotonSOS = ({ habits = [] }) => {
         return (
             <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-8 text-white overflow-y-auto bg-gradient-to-br from-[#1a2a6c] via-[#b21f1f] to-[#fdbb2d] animate-gradient">
                 <button
+                    type="button"
                     onClick={deactivateSOS}
-                    className="absolute top-6 right-6 w-11 h-11 rounded-full flex items-center justify-center bg-black/20 text-white border-0 cursor-pointer z-[10000] hover:bg-black/40"
+                    className="absolute top-6 right-6 size-11 rounded-full flex items-center justify-center bg-black/20 text-white border-0 cursor-pointer z-[10000] hover:bg-black/40"
                 >
                     <X size={28} />
                 </button>
@@ -89,7 +97,7 @@ const BotonSOS = ({ habits = [] }) => {
                         <p className="text-xl text-center max-w-[320px] leading-relaxed font-semibold mb-12 drop-shadow sm:text-lg">"{currentTip}"</p>
                         <button
                             type="button"
-                            onClick={() => setCurrentTip(getRelevantTips()[Math.floor(Math.random() * getRelevantTips().length)])}
+                            onClick={pickRandomTip}
                             className="mb-6 text-white/90 border-b border-dotted border-white/50 bg-transparent border-none cursor-pointer text-base pb-0.5"
                         >
                             Otro consejo
@@ -106,9 +114,9 @@ const BotonSOS = ({ habits = [] }) => {
                     <>
                         <h2 className="mb-8 text-2xl font-light">Haz una de estas 3:</h2>
                         <div className="grid gap-4 w-full max-w-[400px]">
-                            {randomActions.map((action, idx) => (
+                            {randomActions.map((action) => (
                                 <div
-                                    key={idx}
+                                    key={action.title}
                                     className="rounded-md p-6 text-center border-2 border-white/10 bg-black/40 backdrop-blur-md transition-transform hover:-translate-y-0.5 hover:bg-black/60"
                                     style={{ borderColor: action.color }}
                                 >

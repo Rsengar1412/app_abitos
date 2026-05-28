@@ -79,7 +79,16 @@ const CONSECUENCIAS = {
     }
 };
 
-const Contadores = ({ habits = [] }) => {
+const EMPTY_HABITS = [];
+const toStoredHabit = (habit) => ({
+    id: habit.id,
+    name: habit.name,
+    icon: habit.icon,
+    color: habit.color,
+    startDate: habit.startDate
+});
+
+const Contadores = ({ habits = EMPTY_HABITS }) => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [warningHabit, setWarningHabit] = useState(null);
     const { currentUser, logout } = useAuth();
@@ -91,7 +100,7 @@ const Contadores = ({ habits = [] }) => {
         }
         const now = new Date().toISOString();
         const newHabit = { ...preset, startDate: now };
-        const updatedHabits = [...habits.map(({ display, days, ...rest }) => rest), newHabit];
+        const updatedHabits = [...habits.map(toStoredHabit), newHabit];
         try {
             await updateDoc(doc(db, 'users', currentUser.uid), { habits: updatedHabits });
             setShowAddModal(false);
@@ -100,7 +109,12 @@ const Contadores = ({ habits = [] }) => {
 
     const removeHabit = async (id) => {
         if (!window.confirm("¿Estás seguro de que quieres eliminar este hábito por completo? Borrarás todo el historial.")) return;
-        const updatedHabits = habits.filter(h => h.id !== id).map(({ display, days, ...rest }) => rest);
+        const updatedHabits = habits.reduce((acc, habit) => {
+            if (habit.id === id) return acc;
+            const { display: _DISPLAY, days: _DAYS, ...rest } = habit;
+            acc.push(rest);
+            return acc;
+        }, []);
         try {
             await updateDoc(doc(db, 'users', currentUser.uid), { habits: updatedHabits });
         } catch (error) { console.error("Error al eliminar hábito:", error); }
@@ -109,13 +123,14 @@ const Contadores = ({ habits = [] }) => {
     const confirmReset = async () => {
         if (!warningHabit) return;
         const now = new Date().toISOString();
-        const updatedHabits = habits.map(({ display, days, ...rest }) => {
-            if (rest.id === warningHabit.id) return { ...rest, startDate: now };
-            return rest;
+        const updatedHabits = habits.map((habit) => {
+            const base = toStoredHabit(habit);
+            if (base.id === warningHabit.id) return { ...base, startDate: now };
+            return base;
         });
         try {
             await updateDoc(doc(db, 'users', currentUser.uid), { habits: updatedHabits });
-        } catch (error) { alert('Error al guardar.'); }
+        } catch { alert('Error al guardar.'); }
         finally { setWarningHabit(null); }
     };
 
@@ -144,12 +159,14 @@ const Contadores = ({ habits = [] }) => {
         <div className="w-full">
             <div className="flex justify-center items-center gap-4 mb-8 w-full">
                 <button
+                    type="button"
                     onClick={handleLogout}
                     className="flex items-center gap-1.5 py-2 px-3.5 rounded-sm bg-bg-secondary text-text-secondary text-[0.85rem] border-0 cursor-pointer transition-colors hover:bg-bg-primary hover:text-error"
                 >
                     <LogOut size={14} /> Salir
                 </button>
                 <button
+                    type="button"
                     onClick={() => setShowAddModal(true)}
                     className="flex items-center gap-1.5 py-2 px-4 rounded-md bg-brand text-white text-sm font-semibold border-0 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:brightness-110 active:translate-y-0"
                 >
@@ -173,6 +190,7 @@ const Contadores = ({ habits = [] }) => {
                                 <span>{habit.name}</span>
                             </div>
                             <button
+                                type="button"
                                 onClick={() => removeHabit(habit.id)}
                                 className="absolute top-1 right-1 p-1.5 rounded-full flex items-center justify-center bg-transparent border-0 text-text-secondary cursor-pointer opacity-30 transition-all hover:opacity-100 hover:bg-marketing-red/10 hover:text-error"
                             >
@@ -219,6 +237,7 @@ const Contadores = ({ habits = [] }) => {
                         )}
 
                         <button
+                            type="button"
                             onClick={() => requestReset(habit)}
                             className="mt-4 flex items-center gap-2 py-2 px-3 rounded-sm bg-bg-primary text-text-secondary text-sm border border-white/10 cursor-pointer hover:border-brand/50"
                         >
@@ -251,7 +270,7 @@ const Contadores = ({ habits = [] }) => {
                         <button
                             type="button"
                             onClick={() => setShowAddModal(false)}
-                            className="w-full mt-4 mb-4 py-4 px-4 rounded-md bg-white text-black font-bold text-base border-0 cursor-pointer transition-all hover:bg-marketing-red hover:text-white hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-brand/30"
+                            className="w-full mt-4 mb-4 p-4 rounded-md bg-white text-black font-bold text-base border-0 cursor-pointer transition-all hover:bg-marketing-red hover:text-white hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-brand/30"
                         >
                             Cancelar
                         </button>
@@ -267,9 +286,9 @@ const Contadores = ({ habits = [] }) => {
                         <h3 className="text-xl font-extrabold mb-4 text-white uppercase tracking-wide">{alertInfo.titulo}</h3>
                         <p className="text-base leading-relaxed text-white/90 mb-6 font-bold">{alertInfo.subtitulo}</p>
                         <p className="text-base leading-relaxed text-white/90 mb-6">{alertInfo.texto}</p>
-                        <ul className="text-left rounded-sm py-4 px-4 mb-6 bg-marketing-red/10 border-l-4 border-marketing-red pl-2 list-inside">
-                            {alertInfo.lista.map((item, idx) => (
-                                <li key={idx} className="mb-2 text-sm">{item}</li>
+                        <ul className="text-left rounded-sm p-4 mb-6 bg-marketing-red/10 border border-marketing-red/40 pl-2 list-inside">
+                            {alertInfo.lista.map((item) => (
+                                <li key={`${warningHabit.id}-${item}`} className="mb-2 text-sm">{item}</li>
                             ))}
                         </ul>
                         <p className="italic text-[0.95rem] text-accent mb-8 font-medium">{alertInfo.consejo}</p>
@@ -277,7 +296,7 @@ const Contadores = ({ habits = [] }) => {
                             <button
                                 type="button"
                                 onClick={cancelReset}
-                                className="w-full py-4 px-4 rounded-md bg-white text-black font-bold text-base border-0 cursor-pointer transition-all hover:bg-marketing-red hover:text-white hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-brand/30"
+                                className="w-full p-4 rounded-md bg-white text-black font-bold text-base border-0 cursor-pointer transition-all hover:bg-marketing-red hover:text-white hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-brand/30"
                             >
                                 <ArrowLeft size={18} className="inline mr-2 align-middle" />
                                 ¡ESPERA! NO HE RECAÍDO

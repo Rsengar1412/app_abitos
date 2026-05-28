@@ -24,7 +24,7 @@ function LoadingScreen() {
       <ThemeToggle className={themeToggleClass} />
       <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-bg-main text-text-primary p-5 sm:p-4 [padding-left:max(1.25rem,env(safe-area-inset-left))] [padding-right:max(1.25rem,env(safe-area-inset-right))]">
         <div className="text-center max-w-[90vw]">
-          <h2 className="mb-2.5 text-lg font-semibold sm:text-base">Preparando tu camino...</h2>
+          <h2 className="mb-2.5 text-lg font-semibold sm:text-base">Preparando tu camino…</h2>
           <p className="opacity-70 italic text-sm sm:text-xs">Libre - Un día a la vez</p>
         </div>
       </div>

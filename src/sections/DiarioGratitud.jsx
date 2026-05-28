@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/contexts/AuthContext';
 
 const DiarioGratitud = () => {
+    const entrySlots = [0, 1, 2];
     const [entries, setEntries] = useState(['', '', '']);
     const [isCompleted, setIsCompleted] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -86,8 +87,9 @@ const DiarioGratitud = () => {
             <form onSubmit={handleSave} className="flex flex-col gap-3">
                 {entries.map((entry, index) => (
                     <input
-                        key={index}
+                        key={entrySlots[index]}
                         type="text"
+                        aria-label={`Entrada de gratitud ${index + 1}`}
                         placeholder={`${index + 1}. Estoy agradecido por...`}
                         value={entry}
                         onChange={(e) => handleInputChange(index, e.target.value)}
