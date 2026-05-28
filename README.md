@@ -21,4 +21,4 @@ Licencia: MIT
 
 ---
 
-*Cada momento cuenta. Mantente fuerte.*
+_Cada momento cuenta. Mantente fuerte._

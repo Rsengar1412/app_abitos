@@ -1,0 +1,7 @@
+minimumReleaseAge: 10080
+trustPolicy: no-downgrade
+allowBuilds:
+  '@firebase/util': false
+  esbuild: false
+  msgpackr-extract: false
+  protobufjs: false

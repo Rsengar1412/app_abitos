@@ -1,0 +1,23 @@
+# Fuentes de información (app_abitos)
+
+Este repositorio es una app web React con Vite. Para responder o implementar cambios, usa este orden de investigación:
+
+1. `README.md` para contexto funcional del proyecto.
+2. `package.json` para scripts, dependencias y versión de tooling.
+3. `src/App.jsx` para flujo principal y composición de secciones.
+4. `src/sections/` para bloques de UI de cada funcionalidad.
+5. `src/components/` para piezas reutilizables.
+6. `src/contexts/` y `src/hooks/` para estado compartido y lógica reutilizable.
+7. `src/lib/` para integraciones externas (por ejemplo Firebase).
+8. `src/styles/` y configs raíz (`tailwind.config.js`, `eslint.config.js`, `vite.config.js`) para estilos y build.
+
+## Fuente de verdad
+
+- Si hay conflicto entre documentación y código, prevalece el código en `src/`.
+- No inventar APIs ni comportamiento de Firebase: validar en `src/lib/firebase.js` y en los usos reales.
+
+## Qué evitar
+
+- No asumir estructura de monorepo ni rutas de otros proyectos.
+- No mezclar cambios funcionales con refactors amplios sin pedirlo.
+- No cambiar múltiples áreas no relacionadas en un solo commit si el usuario no lo pidió.
