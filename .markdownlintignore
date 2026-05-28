@@ -1,0 +1,4 @@
+node_modules
+dist
+.agents/skills/react-doctor
+.claude/skills/react-doctor
