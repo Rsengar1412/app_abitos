@@ -12,6 +12,11 @@ import { auth } from '@/lib/firebase';
  * AuthContext: Contexto global de React para manejar la autenticación del usuario.
  */
 const AuthContext = createContext();
+const DEMO_USER = {
+  uid: 'demo-user',
+  email: 'demo@libre.app',
+  isDemo: true,
+};
 
 /**
  * useAuth: Hook personalizado para obtener los datos de autenticación de forma sencilla.
@@ -31,6 +36,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   // currentUser: Almacena el objeto del usuario de Firebase cuando está logueado.
   const [currentUser, setCurrentUser] = useState(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   // loading: Controla que no se renderice la app hasta que Firebase confirme si hay sesión activa.
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +44,7 @@ export const AuthProvider = ({ children }) => {
    * register: Crea un nuevo usuario con email y contraseña.
    */
   const register = (email, password) => {
+    setIsDemoMode(false);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
@@ -45,6 +52,7 @@ export const AuthProvider = ({ children }) => {
    * login: Inicia sesión con credenciales existentes.
    */
   const login = (email, password) => {
+    setIsDemoMode(false);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -52,7 +60,18 @@ export const AuthProvider = ({ children }) => {
    * logout: Cierra la sesión activa.
    */
   const logout = () => {
+    if (isDemoMode) {
+      setCurrentUser(null);
+      setIsDemoMode(false);
+      return Promise.resolve();
+    }
     return signOut(auth);
+  };
+
+  const loginAsDemo = () => {
+    setIsDemoMode(true);
+    setCurrentUser(DEMO_USER);
+    return Promise.resolve(DEMO_USER);
   };
 
   /**
@@ -67,13 +86,14 @@ export const AuthProvider = ({ children }) => {
    */
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (isDemoMode) return;
       setCurrentUser(user);
       setLoading(false); // Una vez que Firebase responde, dejamos de cargar.
     });
 
     // Cleanup al desmontar.
     return unsubscribe;
-  }, []);
+  }, [isDemoMode]);
 
   // Valores que estarán disponibles para toda la app.
   const value = {
@@ -82,6 +102,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     resetPassword,
+    loginAsDemo,
+    isDemoMode,
   };
 
   return (

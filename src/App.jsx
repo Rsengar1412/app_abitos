@@ -33,7 +33,7 @@ function LoadingScreen() {
   );
 }
 
-function AppPrincipal({ habits, maxDays }) {
+function AppPrincipal({ habits, maxDays, isDemoMode }) {
   return (
     <div
       className="
@@ -48,9 +48,16 @@ function AppPrincipal({ habits, maxDays }) {
       "
     >
       <header className="flex justify-center items-center shrink-0 py-3 sm:py-4 md:py-5 lg:py-6">
-        <h1 className="text-base font-semibold uppercase tracking-widest text-text-secondary sm:text-lg sm:tracking-[0.2em] md:text-xl lg:text-2xl">
-          Libre
-        </h1>
+        <div className="text-center">
+          <h1 className="text-base font-semibold uppercase tracking-widest text-text-secondary sm:text-lg sm:tracking-[0.2em] md:text-xl lg:text-2xl">
+            Libre
+          </h1>
+          {isDemoMode && (
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-brand">
+              Modo demo
+            </p>
+          )}
+        </div>
       </header>
 
       <ThemeToggle className={themeToggleClass} />
@@ -93,7 +100,7 @@ function AppPrincipal({ habits, maxDays }) {
  * AppContent: Decide qué pantalla mostrar según sesión y datos del usuario (habits).
  */
 function AppContent() {
-  const { currentUser } = useAuth();
+  const { currentUser, isDemoMode } = useAuth();
   const { habits, maxDays, loading } = useUserHabits(currentUser);
 
   if (!currentUser) {
@@ -116,7 +123,7 @@ function AppContent() {
     );
   }
 
-  return <AppPrincipal habits={habits} maxDays={maxDays} />;
+  return <AppPrincipal habits={habits} maxDays={maxDays} isDemoMode={isDemoMode} />;
 }
 
 function App() {

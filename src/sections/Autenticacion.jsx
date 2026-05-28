@@ -8,7 +8,7 @@ const Autenticacion = () => {
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, register, resetPassword } = useAuth();
+  const { login, register, resetPassword, loginAsDemo } = useAuth();
   const emailId = 'auth-email';
   const passwordId = 'auth-password';
 
@@ -114,6 +114,17 @@ const Autenticacion = () => {
                 ? 'Registrarse'
                 : 'Enviar Correo'}
         </button>
+
+        {mode === 'login' && (
+          <button
+            type="button"
+            disabled={loading}
+            onClick={loginAsDemo}
+            className="w-full py-3 px-3 rounded-sm border border-brand/50 text-brand text-base font-semibold cursor-pointer transition-colors hover:bg-brand/10 disabled:opacity-70 disabled:cursor-not-allowed sm:py-2.5 sm:px-3"
+          >
+            Probar modo demo
+          </button>
+        )}
       </form>
 
       <div className="mt-6 text-center text-sm text-text-secondary">

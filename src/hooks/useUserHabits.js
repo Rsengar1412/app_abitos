@@ -3,6 +3,29 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const DEMO_HABITS = [
+  {
+    id: 'socialmedia',
+    name: 'Redes Sociales',
+    icon: 'Smartphone',
+    color: '#9b59b6',
+    startDate: new Date(Date.now() - 12 * MS_PER_DAY).toISOString(),
+  },
+  {
+    id: 'sugar',
+    name: 'Azúcar/Dulces',
+    icon: 'Coffee',
+    color: '#f1c40f',
+    startDate: new Date(Date.now() - 34 * MS_PER_DAY).toISOString(),
+  },
+  {
+    id: 'gaming',
+    name: 'Videojuegos',
+    icon: 'Gamepad2',
+    color: '#2c3e50',
+    startDate: new Date(Date.now() - 5 * MS_PER_DAY).toISOString(),
+  },
+];
 
 export function useUserHabits(currentUser) {
   const [habits, setHabits] = useState([]);
@@ -10,6 +33,7 @@ export function useUserHabits(currentUser) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (currentUser?.isDemo) return;
     if (!currentUser) return;
 
     const safetyTimeout = setTimeout(() => {
@@ -58,6 +82,20 @@ export function useUserHabits(currentUser) {
       clearTimeout(safetyTimeout);
     };
   }, [currentUser]);
+
+  if (currentUser?.isDemo) {
+    const now = new Date();
+    const habits = DEMO_HABITS.map((habit) => {
+      const startDate = new Date(habit.startDate);
+      const days = Math.floor((now - startDate) / MS_PER_DAY);
+      return { ...habit, days: isNaN(days) ? 0 : days };
+    });
+    return {
+      habits,
+      maxDays: habits.length ? Math.max(...habits.map((h) => h.days)) : 0,
+      loading: false,
+    };
+  }
 
   if (!currentUser) {
     return { habits: [], maxDays: 0, loading: false };
