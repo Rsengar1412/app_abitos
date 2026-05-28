@@ -23,7 +23,10 @@ function getInitialTheme() {
   } catch {
     // Ignore read errors from storage.
   }
-  if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: light)').matches) {
+  if (
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-color-scheme: light)').matches
+  ) {
     return 'light';
   }
   return 'dark';
@@ -51,9 +54,5 @@ export const ThemeProvider = ({ children }) => {
 
   const value = { theme, toggleTheme, isDark: theme === 'dark' };
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };

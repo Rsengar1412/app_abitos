@@ -16,7 +16,8 @@ import Recursos from '@/sections/Recursos';
 
 import ThemeToggle from '@/components/ThemeToggle';
 
-const themeToggleClass = 'fixed top-4 right-4 z-[1000] sm:top-3 sm:right-3 [top:max(1rem,env(safe-area-inset-top))] [right:max(1rem,env(safe-area-inset-right))]';
+const themeToggleClass =
+  'fixed top-4 right-4 z-[1000] sm:top-3 sm:right-3 [top:max(1rem,env(safe-area-inset-top))] [right:max(1rem,env(safe-area-inset-right))]';
 
 function LoadingScreen() {
   return (
